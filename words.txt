@@ -657,6 +657,7 @@ academies
 academism
 academisms
 academy
+acai
 acajou
 acajous
 acaleph
@@ -7453,6 +7454,7 @@ approximating
 approximation
 approximations
 approximative
+apps
 appulse
 appulses
 appurtenance
@@ -23373,7 +23375,9 @@ chainsawing
 chainsaws
 chainwheel
 chainwheels
+chai
 chair
+chais
 chaired
 chairing
 chairlift
@@ -24171,6 +24175,7 @@ cheloid
 cheloids
 chelonian
 chelonians
+chem
 chemic
 chemical
 chemically
@@ -41455,6 +41460,7 @@ dinnertimes
 dinnerware
 dinnerwares
 dinning
+dino
 dinoflagellate
 dinoflagellates
 dinosaur
@@ -89594,6 +89600,7 @@ medlar
 medlars
 medley
 medleys
+meds
 medulla
 medullae
 medullar
@@ -89936,6 +89943,7 @@ membraned
 membranes
 membranous
 membranously
+meme
 memento
 mementoes
 mementos
@@ -92421,6 +92429,7 @@ misbutton
 misbuttoned
 misbuttoning
 misbuttons
+misc
 miscalculate
 miscalculated
 miscalculates
@@ -152644,6 +152653,7 @@ teazle
 teazled
 teazles
 teazling
+tech
 teched
 techie
 techier
