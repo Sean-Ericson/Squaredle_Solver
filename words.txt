@@ -20526,6 +20526,7 @@ camisole
 camisoles
 camlet
 camlets
+camo
 camomile
 camomiles
 camorra
@@ -88017,6 +88018,7 @@ manful
 manfully
 manfulness
 manfulnesses
+manga
 mangabey
 mangabeys
 mangabies
@@ -89905,6 +89907,7 @@ melphalan
 melphalans
 mels
 melt
+melty
 meltabilities
 meltability
 meltable
@@ -122613,6 +122616,7 @@ rage
 raged
 ragee
 ragees
+rager
 rages
 ragged
 raggeder
@@ -122810,6 +122814,7 @@ ramee
 ramees
 ramekin
 ramekins
+ramen
 ramenta
 ramentum
 ramequin
