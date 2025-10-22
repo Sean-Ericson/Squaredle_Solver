@@ -45,7 +45,6 @@ def create_graph(grid):
             graph.remove_node(node)
     return graph
 
-
 def find_words(graph, words_by_length):
     found_words = set()
 
