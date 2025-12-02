@@ -110968,6 +110968,7 @@ pestos
 pests
 pesty
 pet
+petabyte
 petal
 petaled
 petaline
@@ -153419,6 +153420,7 @@ tepoy
 tepoys
 tequila
 tequilas
+terabyte
 terai
 terais
 teraohm

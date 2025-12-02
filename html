@@ -1,0 +1,2885 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<title>Squaredle | Daily Word Search Puzzle</title>
+<!-- BeginCss -->
+<link rel="stylesheet" href="style-v3-27-4.css">
+<!-- EndCss -->
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/favicon-180.png" sizes="180x180">
+<link rel="apple-touch-icon" href="icons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="icons/icon-512.png" sizes="512x512">
+<link rel="manifest" href="manifest2.webmanifest">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="keywords" content="squaredle, squardle, wordle, word game, word search, word puzzle, jumble, anagram">
+<meta name="description" content="Squaredle is a daily word building game. Swipe letters in the grid to test your vocabulary every day and rise to the top of the leaderboards!">
+<!-- Don't enable translation, because that messes up the status area and word chip. -->
+<meta name="googlebot" content="notranslate">
+
+<meta name="theme-color" content="#b82828">
+
+<meta property="og:title" content="Squaredle">
+<meta property="og:site_name" content="Squaredle.app">
+<meta property="og:url" content="https://squaredle.app">
+<meta property="og:description" content="Squaredle is a daily word building game. Swipe letters in the grid to test your vocabulary every day and rise to the top of the leaderboards!">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://squaredle.app/squaredle.png">
+
+<!-- srsly plz dont cache this page kthxbye -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script async src='https://www.googletagmanager.com/gtag/js?id=G-SXC0D18MH7'></script>
+<script>
+  'use strict';
+
+  window.TagIds = {
+    Squaredle: 'G-SXC0D18MH7',  // GA4
+    AW: 'AW-10976814591',
+    PW: 'G-7ZBZ5Z93XT',
+  };
+
+  window.ramp = window.ramp || {};
+  window.ramp.que = window.ramp.que || [];
+  window.ramp.passiveMode = true;
+
+  const now = new Date();
+
+  window._pwGA4PageviewId = now.toString();
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () {
+    dataLayer.push(arguments);
+  };
+  gtag('js', now);
+
+  // Confirmed with Cookiebot.
+  const GDPR_COUNTRY_CODES = ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT', 'NL', 'NO', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'];
+
+  // Per Google's guidance, don't set consent defaults globally.
+  // Only set them where visitors would see consent banners.
+  gtag('consent', 'default', {
+    ad_personalization: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    analytics_storage: 'denied',
+    wait_for_update: 500,
+    region: GDPR_COUNTRY_CODES,
+  });
+
+  if (!location.href.includes('forceAnalytics') &&
+      localStorage.getItem('squaredle-analytics-optout') == 'true') {
+    // Respect legacy opt-out.
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied',
+    });
+    for (const tagId of Object.values(window.TagIds))
+      window[`ga-disable-${tagId}`] = true;
+  }
+
+  gtag('config', window.TagIds.Squaredle);
+  gtag('config', window.TagIds.PW);
+
+  if (localStorage.getItem('squaredle-isPremium') != 'true') {
+    // Queue ramp gtag stuff.
+    gtag('config', window.TagIds.PW, {'send_page_view': false});
+    gtag('event', 'ramp_js', {
+      'send_to': TagIds.PW,
+      'pageview_id': window._pwGA4PageviewId,
+    });
+  }
+</script>
+</head>
+
+<body>
+<!-- Put SVG defs first to avoid FOUC. -->
+<svg xmlns="http://www.w3.org/2000/svg"
+  width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="half" x1="0" x2="100%" y1="0" y2="0">
+      <stop offset="50%" stop-color="#b82828" class="gradientStop"></stop>
+      <stop offset="50%" stop-color="#000000"></stop>
+    </linearGradient>
+    <linearGradient id="half-light" x1="0" x2="100%" y1="0" y2="0">
+      <stop offset="50%" stop-color="#b82828" class="gradientStop"></stop>
+      <stop offset="50%" stop-color="#ffffff"></stop>
+    </linearGradient>
+    <symbol id="icon-s" viewBox="0 0 14 15">
+      <polyline fill="currentColor" style="stroke-width: 2"
+        points="12,3 3,3 3,8 12,8 12,13 3,13" />
+    </symbol>
+    <symbol id="icon-account" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+    </symbol>
+    <symbol id="icon-account-plus" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
+    </symbol>
+    <symbol id="icon-puzzle" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M22,13.5C22,15.26 20.7,16.72 19,16.96V20A2,2 0 0,1 17,22H13.2V21.7A2.7,2.7 0 0,0 10.5,19C9,19 7.8,20.21 7.8,21.7V22H4A2,2 0 0,1 2,20V16.2H2.3C3.79,16.2 5,15 5,13.5C5,12 3.79,10.8 2.3,10.8H2V7A2,2 0 0,1 4,5H7.04C7.28,3.3 8.74,2 10.5,2C12.26,2 13.72,3.3 13.96,5H17A2,2 0 0,1 19,7V10.04C20.7,10.28 22,11.74 22,13.5M17,15H18.5A1.5,1.5 0 0,0 20,13.5A1.5,1.5 0 0,0 18.5,12H17V7H12V5.5A1.5,1.5 0 0,0 10.5,4A1.5,1.5 0 0,0 9,5.5V7H4V9.12C5.76,9.8 7,11.5 7,13.5C7,15.5 5.75,17.2 4,17.88V20H6.12C6.8,18.25 8.5,17 10.5,17C12.5,17 14.2,18.25 14.88,20H17V15Z" />
+    </symbol>
+    <symbol id="icon-puzzle-star" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M19 20.09L21.45 21.58L20.8 18.77L23 16.89L20.11 16.64L19 14L17.87 16.64L15 16.89L17.18 18.77L16.5 21.58L19 20.09M23 13.5C23 13.5 23 13.5 23 13.53C21.94 12.58 20.54 12 19 12C15.69 12 13 14.69 13 18C13 18.34 13.04 18.67 13.09 19H12.75C12.27 18.27 11.44 17.8 10.5 17.8C9 17.8 7.8 19 7.8 20.5V22H4C2.9 22 2 21.11 2 20V16.2H3.5C5 16.2 6.2 15 6.2 13.5S5 10.8 3.5 10.8H2V7C2 5.9 2.9 5 4 5H8V3.5C8 2.12 9.12 1 10.5 1S13 2.12 13 3.5V5H17C18.1 5 19 5.89 19 7V11H20.5C21.88 11 23 12.12 23 13.5Z" />
+    </symbol>
+    <symbol id="icon-rotate-right" viewBox="0 0 24 24">
+      <path d="M16.89,15.5L18.31,16.89C19.21,15.73 19.76,14.39 19.93,13H17.91C17.77,13.87 17.43,14.72 16.89,15.5M13,17.9V19.92C14.39,19.75 15.74,19.21 16.9,18.31L15.46,16.87C14.71,17.41 13.87,17.76 13,17.9M19.93,11C19.76,9.61 19.21,8.27 18.31,7.11L16.89,8.53C17.43,9.28 17.77,10.13 17.91,11M15.55,5.55L11,1V4.07C7.06,4.56 4,7.92 4,12C4,16.08 7.05,19.44 11,19.93V17.91C8.16,17.43 6,14.97 6,12C6,9.03 8.16,6.57 11,6.09V10L15.55,5.55Z" />
+    </symbol>
+    <!-- Use #icon-help for the main help button, and #icon-help-outline for inline help tooltips. -->
+    <symbol id="icon-help" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+    </symbol>
+    <symbol id="icon-help-outline" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M11,18H13V16H11V18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,6A4,4 0 0,0 8,10H10A2,2 0 0,1 12,8A2,2 0 0,1 14,10C14,12 11,11.75 11,15H13C13,12.75 16,12.5 16,10A4,4 0 0,0 12,6Z" />
+    </symbol>
+    <symbol id="icon-cog" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+    </symbol>
+    <symbol id="icon-share-variant" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
+    </symbol>
+    <symbol id="icon-globe" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M17.9,17.39C17.64,16.59 16.89,16 16,16H15V13A1,1 0 0,0 14,12H8V10H10A1,1 0 0,0 11,9V7H13A2,2 0 0,0 15,5V4.59C17.93,5.77 20,8.64 20,12C20,14.08 19.2,15.97 17.9,17.39M11,19.93C7.05,19.44 4,16.08 4,12C4,11.38 4.08,10.78 4.21,10.21L9,15V16A2,2 0 0,0 11,18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+    </symbol>
+    <symbol id="icon-chart" viewBox="0 0 24 24">
+      <!-- Shifted vertically up one pixel for better visual alignment. -->
+      <path fill="currentColor" d="M6,15.5L3,18.44V10H6M11,13.66L9.43,12.32L8,13.64V6H11M16,12L13,15V2H16M18.81,11.81L17,10H22V15L20.21,13.21L13,20.36L9.53,17.34L5.75,21H3L9.47,14.66L13,17.64" />
+    </symbol>
+    <symbol id="icon-delete" viewBox="0 0 24 24">
+      <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+    </symbol>
+    <symbol id="icon-delete-active" viewBox="0 0 24 24">
+      <path d="M20.37,8.91L19.37,10.64L7.24,3.64L8.24,1.91L11.28,3.66L12.64,3.29L16.97,5.79L17.34,7.16L20.37,8.91M6,19V7H11.07L18,11V19A2,2 0 0,1 16,21H8A2,2 0 0,1 6,19Z" />
+    </symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+    </symbol>
+    <symbol id="icon-audio" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z" />
+    </symbol>
+    <symbol id="icon-audio-muted" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12,4L9.91,6.09L12,8.18M4.27,3L3,4.27L7.73,9H3V15H7L12,20V13.27L16.25,17.53C15.58,18.04 14.83,18.46 14,18.7V20.77C15.38,20.45 16.63,19.82 17.68,18.96L19.73,21L21,19.73L12,10.73M19,12C19,12.94 18.8,13.82 18.46,14.64L19.97,16.15C20.62,14.91 21,13.5 21,12C21,7.72 18,4.14 14,3.23V5.29C16.89,6.15 19,8.83 19,12M16.5,12C16.5,10.23 15.5,8.71 14,7.97V10.18L16.45,12.63C16.5,12.43 16.5,12.21 16.5,12Z" />
+    </symbol>
+    <symbol id="icon-today" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M7,10H12V15H7M19,19H5V8H19M19,3H18V1H16V3H8V1H6V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" />
+    </symbol>
+    <symbol id="icon-history" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M13.5,8H12V13L16.28,15.54L17,14.33L13.5,12.25V8M13,3A9,9 0 0,0 4,12H1L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3" />
+    </symbol>
+    <symbol id="icon-calendar-cursor" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M21.7 20.26L20.29 21.67L17.06 18.5L16 20.97L14 14L21 16L18.47 17.03L21.7 20.26M19 8H5V19H13.41L13.97 21H5C3.89 21 3 20.1 3 19L3 5C3 3.9 3.89 3 5 3H6V1H8V3H16V1H18V3H19C20.1 3 21 3.9 21 5V13.95L19 13.35V8M12 10V15H7V10H12Z" />
+    </symbol>
+    <symbol id="icon-open-in-new" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
+    </symbol>
+    <symbol id="icon-merch" viewBox="0 0 24 24">
+      <path d="M16,21H8A1,1 0 0,1 7,20V12.07L5.7,13.12C5.31,13.5 4.68,13.5 4.29,13.12L1.46,10.29C1.07,9.9 1.07,9.27 1.46,8.88L7.34,3H9C9,4.1 10.34,5 12,5C13.66,5 15,4.1 15,3H16.66L22.54,8.88C22.93,9.27 22.93,9.9 22.54,10.29L19.71,13.12C19.32,13.5 18.69,13.5 18.3,13.12L17,12.07V20A1,1 0 0,1 16,21M20.42,9.58L16.11,5.28C15.8,5.63 15.43,5.94 15,6.2C14.16,6.7 13.13,7 12,7C10.3,7 8.79,6.32 7.89,5.28L3.58,9.58L5,11L8,9H9V19H15V9H16L19,11L20.42,9.58Z" />
+    </symbol>
+    <symbol id="icon-heart" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+    </symbol>
+    <symbol id="icon-star" viewBox="0 0 24 24">
+      <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
+    </symbol>
+    <symbol id="icon-star-outline" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z" />
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+    </symbol>
+    <symbol id="icon-checkbox-blank-outline" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,5V19H5V5H19Z" />
+    </symbol>
+    <symbol id="icon-checkbox-marked-outline" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M19,19H5V5H15V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V11H19M7.91,10.08L6.5,11.5L11,16L21,6L19.59,4.58L11,13.17L7.91,10.08Z" />
+    </symbol>
+    <symbol id="icon-no" viewBox="0 0 160 160">
+      <circle cx="80" cy="80" r="72" fill="none" stroke="#b71f2e" stroke-width="16"/>
+      <path d="M 32,32 L 128,128" stroke="#b71f2e" stroke-width="12.8"/>
+    </symbol>
+
+
+    <symbol id="icon-squared" style="fill: gold" viewBox="0 0 24 24">
+      <rect height="9" width="9" x="2" y="2" />
+      <rect height="9" width="9" x="14" y="2" />
+      <rect height="9" width="9" x="2" y="14" />
+      <rect height="9" width="9" x="14" y="14" />
+    </symbol>
+    <symbol fill="gold" id="icon-premium" viewBox="0 0 16 16">
+      <rect height="6" width="6" x="2" y="2" />
+      <rect height="6" width="6" x="10" y="2" />
+      <rect height="6" width="6" x="2" y="10" />
+      <rect height="6" width="6" x="10" y="10" />
+    </symbol>
+  </defs>
+</svg>
+
+<div id="mainContentWrapper">
+
+<!-- Header bar -->
+
+<header>
+  <div class="primaryContent">
+    <div class="headerTopButton left">
+      <button id="drawerBtn" class="icon-button" aria-label="menu"
+        data-button="header-drawer">
+        <svg><use href="#icon-menu" /></svg>
+      </button>
+      <button id="choosePuzzleBtn" class="icon-button" aria-label="beta"
+        disabled data-button="header-beta" hidden>
+        <svg><use href="#icon-puzzle" /></svg>
+        <span id="betaPuzzleBox" class="scoreBox box arrow-top-left" hidden>
+          New&nbsp;preview puzzle!
+        </span>
+      </button>
+      <button class="icon-button leaderboardsBtn" aria-label="leaderboards"
+        data-button="header-leaderboards">
+        <svg><use href="#icon-chart" /></svg>
+        <div id="leaderboardsBox" class="scoreBox box arrow-top-left" hidden>
+          Tap for the <strong>leaderboard</strong>!
+        </div>
+      </button>
+      <a href="#" class="skipTutorial" hidden>
+        Skip<span class="wideLink" hidden>&nbsp;tutorial</span>
+      </a>
+    </div>
+    <a href="/" id="title">
+      <svg title="Squaredle" alt="S"><use href="#icon-s" /></svg>quaredle
+    </a>
+    <div class="headerTopButton right">
+      <button id="aboutBtn" class="icon-button aboutBtn" aria-label="about"
+          data-button="header-about">
+        <svg><use href="#icon-help" /></svg>
+      </button>
+      <button class="sh4reBtn icon-button" aria-label="share"
+        data-button="header-share">
+        <svg><use href="#icon-share-variant" /></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+
+<!-- Drawer -->
+<div id="drawer" hidden>
+  <a href="#" id="drawerClose">
+    <svg><use href="#icon-close" /></svg>
+    Close
+  </a>
+  <a href="#" id="drawerSettings" class="settingsBtn">
+    <svg><use href="#icon-cog" /></svg>
+    Settings
+  </a>
+  <a href="#" id="drawerSale" hidden>
+    <svg><use href="#icon-squared" /></svg>
+    Gift sub sale!
+  </a>
+  <a href="#" id="drawerSignIn" class="registerBtn">
+    <svg><use href="#icon-account-plus" /></svg>
+    Register/Sign in
+  </a>
+  <a href="#" id="drawerToday" hidden>
+    <svg><use href="#icon-today" /></svg>
+    Today's puzzle
+  </a>
+  <a href="#" id="drawerArchive">
+    <svg><use href="#icon-squared" /></svg>
+    Archive &amp; classics
+  </a>
+  <a href="#" id="drawerSpecial">
+    <svg><use href="#icon-star-outline" /></svg>
+    Special puzzles
+  </a>
+  <a href="#" id="drawerAchievements" class="achievementsBtn">
+    <svg><use href="#icon-checkbox-marked-outline" /></svg>
+    Achievements
+  </a>
+  <a href="https://merch.squaredle.app" target="_blank" id="drawerMerch"
+    class="merchBtn">
+    <svg><use href="#icon-merch" /></svg>
+    Merch
+  </a>
+  <a href="#" id="drawerContribute" class="contributeBtn">
+    <svg><use href="#icon-heart" /></svg>
+    Contribute
+  </a>
+  <a href="#" id="drawerAbout" class="aboutBtn">
+    <svg><use href="#icon-help-outline" /></svg>
+    About &amp; feedback
+  </a>
+</div>
+
+<noscript>Please <a href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/" target="_blank">enable JavaScript</a> to play Squaredle.</noscript>
+
+<!-- Main content area -->
+
+<div id="outerContainer" class="loading">
+
+<div id="loadingText">Loading puzzle...</div>
+
+<main class="primaryContent">
+  <!-- Word count -->
+  <a href="#" id="wordCountArea" class="wordListBtn afterGotWord"
+      data-button="wordCount">
+    <div id="puzzleWatermark" hidden></div>
+    <span id="wordCount">
+      <span id="prevWordCount" aria-hidden="true"></span>
+      <span id="curWordCount"></span>
+    </span>
+    <span class="divider" aria-label="out of">/</span>
+    <span class="maxWordCount">
+      <span id="maxWordCount"></span><span id="wordsLabel">&nbsp;words</span>
+    </span>
+    <span id="obscureWordCount" class="wordListBtn">
+      (+<span id="curObscureWordCount"></span>)
+    </span>
+  </a>
+
+  <!-- Progress bar -->
+  <div id="progressCell">
+    <div id="progressArea" class="sh4reBtn">
+      <div id="progress">
+        <div id="difficultyAlert" class="difficultyNote" hidden>
+          <span>Today's difficulty:</span>
+          <span class="difficultyStars"></span>
+        </div>
+        <div id="filled"></div>
+        <div id="filled1Marker">&starf;</div>
+        <div id="filled2Marker">&starf;</div>
+        <div id="filled3Marker">&starf;</div>
+      </div>
+      <button id="globalIcon" class="icon-button score-icon" hidden
+         aria-label="global average" data-button="globalScore">
+        <svg><use href="#icon-globe" /></svg>
+      </button>
+      <div id="scoreBox" class="scoreBox box arrow-top-left" hidden>Your score</div>
+      <div id="globalBox" class="scoreBox box arrow-top-left" hidden>Global&nbsp;average</div>
+    </div>
+    <div id="tutorialBox" class="tutorial non-grid">
+      <div id="tutorialMsg"></div>
+    </div>
+  </div>
+
+  <!-- Board -->
+  <div id="game" translate="no" class="notranslate">
+    <div id="messageArea">
+      <div id="spacer">X</div>
+      <div id="word" hidden>&#8203;<span id="wordText"></span></div>
+      <div id="status" hidden>&#8203;<span id="statusText"></span><span id="statusIcon"></span></div>
+      <button id="wordDefiner" class="basicButton" data-button="wordDefiner">
+        <span id="wordDefinerWord"></span>
+        <span id="wordDetails" hidden>
+          <svg class="inline-icon"><use href="#icon-star" /></svg>
+        </span>
+      </button>
+      <div id="incorrectWord">
+        <svg><use href="#icon-no" /></svg>
+        <span id="incorrectWordText"></span>
+      </div>
+    </div>
+    <div id="board"></div>
+    <div id="verticalSpacer"></div>
+  </div>
+
+  <!-- Hint explanations -->
+
+  <div id="explainer" hidden>
+    <div id="explainerText"></div>
+    <div class="p closeButtons">
+      <button id="explainerPermaClose" class="basicButton">Don't show this again</button>
+      <button id="explainerClose" class="primaryButton">Close</button>
+    </div>
+  </div>
+
+  <div id="belowBoard">
+    <div id="footer">
+      <div id="timer">&nbsp;</div>
+    </div>
+    <!-- Below Board -->
+    <div class="viewport">
+      <div id="btf-leaderboard"></div>
+    </div>
+  </div>
+</main>
+
+<!-- TODO: Merge this with loading scrim -->
+<div id="loading" hidden>Loading beta puzzle...</div>
+
+<div id="wordList" class="popup tabbed" hidden>
+  <h2>
+    <span>Words</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+
+  <div class="content hideInitial">
+    <div class="tabs">
+      <div role="tablist">
+        <button type="button" role="tab" aria-selected="true"
+            aria-controls="wordsTodayTab">
+          <span class="notExtraNarrow">Today</span>
+          <span class="extraNarrow">
+            <svg class="inline-icon"><use href="#icon-today" /></svg>
+          </span>
+        </button>
+        <button type="button" role="tab" aria-selected="false"
+            aria-controls="wordsYesterdayTab" class="notTutorial">
+          <span class="notExtraNarrow">Yesterday</span>
+          <span class="extraNarrow">
+            <svg class="inline-icon"><use href="#icon-history" /></svg>
+          </span>
+        </button>
+        <button type="button" role="tab" aria-selected="false"
+            aria-controls="wordsPastTab" class="premium notTutorial">
+          <span class="notExtraNarrow">Past</span>
+          <span class="extraNarrow">
+            <svg class="inline-icon"><use href="#icon-calendar-cursor" /></svg>
+          </span>
+        </button>
+      </div>
+
+      <div role="tabpanel" id="wordsTodayTab">
+        <div class="p tutorial">
+          This is the <strong>word list</strong>. It shows what words you've
+          found and which words are still missing.
+        </div>
+        <div class="p tutorial narrow">
+          You're almost done!
+            Just <a href="#" class="closeBtn">close the word list</a> and find
+            your last word.
+        </div>
+        <div class="p difficultyNote" hidden>
+          <span><strong>Difficulty:</strong></span>
+          <span class="difficultyStars"></span>
+        </div>
+
+        <div class="p" id="wordListHintsLater">
+          Check here for hints when you've completed more of the
+          puzzle<span id="hintsAvailableLater">
+          (or at <span class="hintsAvailableTime">3pm Pacific</span>)</span>.
+        </div>
+        <div id="wordListHints">
+          <h3>Hints</h3>
+          <form>
+            <label>
+              <input type="checkbox" id="hintSort">
+              <span>
+                Sort words alphabetically
+                <button aria-controls="hintSortHelp"
+                    class="icon-button inline-icon" aria-label="help">
+                  <svg><use href="#icon-help-outline" /></svg>
+                </button>
+              </span>
+            </label>
+            <div id="hintSortHelp" class="helpText" hidden>
+              Shows all missing words in the word list, sorted alphabetically
+              with the words you've already found so you know where to look.
+            </div>
+            <label>
+              <input type="checkbox" id="hintFirstLetters">
+              <span>
+                Show some letters
+                <button aria-controls="hintFirstLettersHelp"
+                    class="icon-button inline-icon" aria-label="help">
+                  <svg><use href="#icon-help-outline" /></svg>
+                </button>
+              </span>
+            </label>
+            <div id="hintFirstLettersHelp" class="helpText" hidden>
+              Shows the first letter of missing words in the word list.
+              Longer words give the first two letters and even some ending
+              letters.
+            </div>
+          </form>
+        </div>
+        <div class="p notTutorial" id="revealsRemaining">
+          <div>
+            <svg class="inline-icon" hidden><use href="#icon-premium" /></svg>
+            Reveals remaining: <span></span>
+            <button aria-controls="revealsRemainingHelp"
+                class="icon-button inline-icon" aria-label="help">
+              <svg><use href="#icon-help-outline" /></svg>
+            </button>
+          </div>
+          <div id="revealsRemainingHelp" class="helpText" hidden>
+            <div class="p">
+              Select a word in the list below to reveal it (4&ndash;6 letters only).
+              You get 1 free reveal per puzzle<span id="helpTextBwotd">, and 1
+                more if you find the Bonus Word of the Day</span>.
+              <span class="premium">
+                You get 4 additional reveals from Squaredle Squared.
+              </span>
+            </div>
+            <div class="p notPremium" id="revealsRemainingHelpUpgrade">
+              <svg class="inline-icon"><use href="#icon-premium" /></svg>
+              <a href="#" class="premiumBtn gold"
+                data-button="revealsRemaining-upgrade">
+                Upgrade to Squaredle Squared</a>
+              for an extra 4 reveals per puzzle.
+            </div>
+          </div>
+        </div>
+        <div class="notPremium helpText" id="revealsRemainingUpgrade" hidden>
+          <svg class="inline-icon"><use href="#icon-premium" /></svg>
+          <a href="#" class="premiumBtn gold"
+            data-button="revealsRemaining-upgrade">
+            Upgrade to Squaredle Squared</a>
+          for an extra 4 reveals per puzzle.
+        </div>
+
+        <div class="wordLengths"></div>
+
+        <div class="p notTutorial">
+          <form>
+            <label>
+              <input type="checkbox" id="showWordsInFoundOrderToggle"
+                data-button="wordList-showWordsInFoundOrder">
+              <span>Show words in found order</span>
+            </label>
+          </form>
+        </div>
+        <div class="p" id="wordsInFoundOrder" hidden>
+          <div></div>
+          <div class="p" id="bonusWordsInFoundOrder"></div>
+        </div>
+        <div class="p disclaimer" id="wordsAuthor" hidden>
+          <span></span>
+        </div>
+        <div id="replayPuzzleTeaser" class="notTutorial">
+          <hr>
+          <div class="p">
+            Want to replay this puzzle from scratch?
+          </div>
+          <div class="p">
+            <button class="primaryButton" id="replayCurPuzzle"
+              data-button="wordList-replayPuzzle">
+            <svg class="inline-icon"><use href="#icon-premium" /></svg>
+              Replay puzzle
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div role="tabpanel" id="wordsYesterdayTab" hidden>
+        <div id="yesterdayBoard" class="p yesterday"></div>
+        <div id="yesterdayLinks">
+          <div class="p">
+            <button class="secondaryButton"
+              data-button="wordList-yesterday-play"
+              id="wordList-yesterday-play">
+              <svg class="inline-icon"><use href="#icon-premium" /></svg>
+              Play yesterday's board
+            </button>
+          </div>
+          <div class="p">
+            <button class="primaryButton" data-button="wordList-yesterday-show"
+              id="wordList-yesterday-show">Show yesterday's words</button>
+          </div>
+        </div>
+        <div id="yesterdayReveal" hidden>
+          <div class="yesterday">
+            <div class="p">
+              Words you missed are <span class="missedWord">highlighted</span>.
+            </div>
+          </div>
+          <div class="wordLengths"></div>
+          <div class="p">
+            <form>
+              <label>
+                <input type="checkbox" id="yesterdayShowWordsInFoundOrderToggle"
+                  data-button="wordList-yesterdayShowWordsInFoundOrder">
+                <span>Show words in found order</span>
+              </label>
+            </form>
+          </div>
+          <div class="p" id="yesterdayWordsInFoundOrder" hidden>
+            <div></div>
+            <div class="p" id="yesterdayBonusWordsInFoundOrder"></div>
+          </div>
+        </div>
+      </div>
+
+      <div role="tabpanel" id="wordsPastTab" hidden>
+        <div class="p">
+          <button class="primaryButton" data-button="wordList-past-today"
+            id="wordList-past-today">Play today's puzzle</button>
+        </div>
+        <div class="p">
+          <button class="secondaryButton" data-button="wordList-past-archives"
+            id="wordList-past-archives">Launch archives</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</div>
+
+<!-- Misc page elements -->
+
+<div id="overlay" hidden></div>
+
+<div id="definition" hidden>
+  <h2>
+    <span class="definitionWord"></span>
+    <div><a href="#"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="definitionContent">
+    <div class="definitionStats"></div>
+    <div class="p definitionNote">
+      <div class="definitionNoteHeader">Squad note:</div>
+      <div class="definitionNoteBody"></div>
+    </div>
+    <div class="definitionEntry"></div>
+    <div class="p definitionSource">
+      <a class="definitionLink" target="_blank">
+        Look up "<span class="dictionaryWord"></span>"</a>
+      in <span class="dictionaryName"></span>
+    </div>
+  </div>
+</div>
+
+<div id="confirm" hidden>
+  <div id="confirmText">
+  </div>
+  <div class="p closeButtons">
+    <button id="confirmCancel" class="basicButton"></button>
+    <button id="confirmAccept" class="primaryButton"></button>
+  </div>
+</div>
+
+<div id="achievement" hidden>
+  <svg class="inline-icon"><use href="#icon-checkbox-marked-outline" /></svg>
+  <span>
+    <strong><span class="title"></span>:</strong>
+    <span class="desc"></span>
+  </span>
+</div>
+
+
+<!-- Popups -->
+
+<div id="about" class="popup tabbed" hidden>
+  <h2>
+    <span>Squaredle</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="tabs">
+      <div role="tablist">
+        <button type="button" role="tab" aria-selected="true"
+            aria-controls="aboutTab">
+          About
+        </button>
+        <button type="button" role="tab" aria-selected="false"
+            id="feedbackTabBtn"
+            aria-controls="feedbackTab">
+          <span>Help &amp; feedback</span>
+        </button>
+      </div>
+
+      <div role="tabpanel" id="aboutTab">
+        <div class="p">
+          Squaredle is a daily word search game.
+        </div>
+        <div class="p socialIcons">
+          <a href="https://discord.gg/Pkad9p4rsq" target="_blank"
+            data-button="about-discord">
+            <img src="https://s.squaredle.app/assets/icons/discord.png" class="dark" width="24" height="27">
+            <img src="https://s.squaredle.app/assets/icons/discord-light.png" class="light" width="24" height="27">
+          </a>
+          <a href="https://twitter.com/SquaredleApp" target="_blank"
+            data-button="about-twitter">
+            <img src="https://s.squaredle.app/assets/icons/twitter.png" width="24" height="20">
+          </a>
+          <a href="https://reddit.com/r/squaredle" target="_blank"
+            data-button="about-reddit">
+            <img src="https://s.squaredle.app/assets/icons/reddit.png" width="24" height="24">
+          </a>
+          <a href="https://www.facebook.com/groups/squaredleapp" target="_blank"
+            data-button="about-facebook">
+            <img src="https://s.squaredle.app/assets/icons/facebook.png" width="24" height="24">
+          </a>
+        </div>
+        <div class="p">
+          Read on, or find more questions &amp; answers in the
+          <a href="/faqs.html" target="_blank" data-button="faqs">
+            Squaredle FAQs</a>.
+        </div>
+        <div class="p contributeCTA notPremium notTutorial">
+          <a href="#" class="premiumBtn standout" data-btn="about-premium">
+            Subscribe now</a>
+          for premium puzzles &amp; features.
+        </div>
+        <h3>How do I play?</h3>
+        <div class="p">
+          Find words by <strong>connecting letters</strong> in any direction.
+        </div>
+        <div class="p">
+          Squares fade out once you find all the words using them. Find all the
+          words to clear the board!
+        </div>
+        <div class="p narrow">
+          <strong>
+            Tap the
+            <a href="#" class="wordListBtn"
+              data-button="about-wordList">word count</a>
+          </strong>
+          to see which words you've found and how long the remaining words are.
+        </div>
+        <div class="p">
+          <strong>Capitalized</strong> or <strong>hyphenated</strong> words
+          usually aren't in our word list.
+        </div>
+        <div class="p">
+          If it helps, you can <strong>rotate the board</strong> with the rotate
+          <svg class="inline-icon"><use href="#icon-rotate-right" /></svg>
+          icon for another perspective.
+        </div>
+        <h3>What's the progress bar?</h3>
+        <div class="p">
+          Longer words are worth more points, bringing you closer to unlocking
+          the next <strong>perk</strong>.
+        </div>
+        <div class="p">
+          <ul>
+            <li>
+              When you reach the first star
+              <svg class="inline-icon" role="img">
+                <use href="#icon-star" fill="var(--secondary)"/>
+              </svg>,
+              tiles show <strong>how many words start with them</strong>.
+            </li>
+            <li>
+              The second star
+              <svg class="inline-icon"><use href="#icon-star" fill="var(--secondary)"/></svg>
+              reveals <strong>how many words use each tile</strong>.
+            </li>
+            <li>
+              Get to the third
+              <svg class="inline-icon"><use href="#icon-star" fill="var(--secondary)"/></svg>
+              to unlock <strong>hints</strong> in the word list.
+            </li>
+          </ul>
+        </div>
+        <div class="p">
+          The globe icon
+          <svg class="inline-icon"><use href="#icon-globe" /></svg>
+          represents the average of everyone's score so far. Try to beat it!
+        </div>
+        <h3>When does the next puzzle come out?</h3>
+        <div class="p">
+          New puzzles come out each day at
+          <span class="newPuzzleTimeWithPeriod">3am Pacific.</span>
+        </div>
+        <div class="p">
+          Monday puzzles are the easiest; Fridays are the hardest.
+          Saturday puzzles have fun twists, and Sundays have tons of words.
+        </div>
+        <div class="p">
+          Each day also brings a new 3x3
+          <a href="https://squaredle.app/xp" id="aboutXp">Express</a>
+          puzzle.
+        </div>
+        <h3>Can I use a physical keyboard?</h3>
+        <div class="p">
+          Yes! Type out the letters, then press &lt;<code>Enter</code>&gt; to
+          submit the word. Use &lt;<code>Backspace</code>&gt; to delete a letter.
+          The &lt;<code>Space&nbsp;bar</code>&gt; cycles between squares with
+          the same letter.
+        </div>
+        <h3>What's a bonus word?</h3>
+        <div class="p">
+          Obscure, archaic, and (some) slang words are "bonus" words &mdash; they're
+          not part of your score, but they show up as "+1" next to the word
+          count. The leaderboard
+          <svg class="inline-icon"><use href="#icon-chart" /></svg>
+          shows who's found the most bonus words.
+          <a href="#" id="aboutBonusWords">More about bonus words</a>
+        </div>
+        <h3>How can I help?</h3>
+        <div class="contributeCTA">
+          <div class="p notPremium">
+            <a href="#" class="contributeBtn"
+                data-button="about-signUp">Sign up</a>
+            for Squaredle Squared or donate toward server costs. Thanks!
+          </div>
+          <div class="p premium">
+            You're already helping by subscribing to Squaredle Squared. Thank
+            you!
+          </div>
+          <div class="p premium">
+            You can also
+            <a href="https://ko-fi.com/squaredle" target="_blank"
+                class="kofi-link"
+                data-button="about-donate">donate</a>
+            toward server costs or become a Ko-fi member for access to upcoming
+            features and puzzles.
+          </div>
+        </div>
+        <div class="p">
+          Find more questions &amp; answers in
+          <a href="/faqs.html" target="_blank" data-button="faqs">
+            the Squaredle FAQs here</a>.
+        </div>
+        <div class="p">
+          <a href="#" id="creditsBtn" data-button="about-credits">Credits</a>
+        </div>
+        <div class="p">
+            <a href="/terms" target="_blank" data-button="about-terms">Terms of Use</a>
+        </div>
+        <div class="p">
+          <a href="/privacy" id="privacyBtn" data-button="about-privacy">Privacy Policy</a>
+        </div>
+        <div class="p disclaimer" id="version">v3.27.4</div>
+      </div>
+
+      <div role="tabpanel" id="feedbackTab" class="preventEscape" hidden>
+        <a href="/faqs.html" target="_blank" data-button="faqs">Squaredle FAQs</a>
+        <div id="feedbackMain">
+          <span>Account:</span>
+          <div>
+            <span class="registerSuggestion">
+              <a href="#" class="registerBtn"
+                  data-button="feedback-register">Register</a>
+              /
+              <a href="#" class="signInBtn" data-button="feedback-signIn">sign in</a>
+            </span>
+            <span class="signedInStatus" hidden>
+              <a href="#" class="registerBtn signedInEmail"
+                  data-button="feedback-signedIn"></a>
+            </span>
+          </div>
+          <span>Squared:</span>
+          <span>
+            <span class="notPremium">No</span>
+            <span class="premium">Yes</span>
+          </span>
+        </div>
+        <span id="feedbackTimeTravel" class="error" style="font-weight: bold"></span>
+        <span><strong>Feedback:</strong></span>
+        <div id="feedbackSection">
+          <form id="feedbackForm" class="verticalForm" accept-charset="utf-8">
+            <select id="feedbackTopic" class="p" autocomplete="off">
+              <option disabled selected value="">Select a topic</option>
+            </select>
+
+            <div id="feedbackSubsection" class="verticalForm" hidden></div>
+
+            <div id="feedbackCommon" hidden>
+              <textarea id="comments" maxlength="5000"
+                  placeholder="Details, comments, suggestions..."
+                  class="sentry-mask"></textarea>
+              <input type="email" id="feedbackEmail" class="sentry-mask"
+                  maxlength="255" placeholder="Your email"
+                  autocomplete="username" required>
+              <button id="submitFeedback" class="primaryButton" type="submit">
+                Submit
+              </button>
+              <div class="p disclaimer registerSuggestion">
+                Email address is <strong>only</strong> used for Squaredle to
+                identify and respond to your comments. We don't share it or spam it.
+              </div>
+            </div>
+          </form>
+
+          <div id="feedbackSubmissionStatus" class="p feedbackResult" hidden></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="credits" class="popup" hidden>
+  <h2>
+    <span>Credits</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <h3>Thanks</h3>
+    <div class="p">
+      Thanks to all our beta testers, especially
+      Carol, Jenn, Joanne, Jonathan, Julia, Laura, Pete, &amp; Shannon.
+    </div>
+    <h3>Words</h3>
+    <div class="p">
+      Squaredle has licensed the official NASPA word list,
+      <a href="https://scrabbleplayers.org/w/NWL2023#Electronic_Editions"
+        target="_blank">NWL2023</a>,
+      to determine which words are valid. We then separate these into required
+      and bonus words based on how familiar American English speakers are with
+      these words.
+    </div>
+    <h3>Definitions</h3>
+    <div class="p">
+      Definitions come from Wiktionary, the free dictionary. Note that words
+      that users have contributed to Wiktionary might not be valid in Squaredle!
+    </div>
+    <h3>Music</h3>
+    <ul class="disclaimer">
+      <li>
+        Sounds effects from <a href="https://www.zapsplat.com/" target="_blank">ZapSplat</a>
+      </li>
+      <li><a href="https://incompetech.filmmusic.io/song/4985-danger-storm" target="_blank">Danger Storm by Kevin MacLeod</a> (<a href="https://filmmusic.io/standard-license" target="_blank">License</a>)</li>
+      <li><a href="https://incompetech.filmmusic.io/song/4987-edm-detection-mode" target="_blank">Edm Detection Mode by Kevin MacLeod</a> (<a href="https://filmmusic.io/standard-license" target="_blank">License</a>)</li>
+      <li><a href="https://incompetech.filmmusic.io/song/5026-half-mystery" target="_blank">Half Mystery by Kevin MacLeod</a> (<a href="https://filmmusic.io/standard-license" target="_blank">License</a>)</li>
+      <li><a href="https://incompetech.filmmusic.io/song/3892-hypnothis" target="_blank">Hypnothis by Kevin MacLeod</a> (<a href="https://filmmusic.io/standard-license" target="_blank">License</a>)</li>
+      <li><a href="https://incompetech.filmmusic.io/song/7565-impact-prelude" target="_blank">Impact Prelude by Kevin MacLeod</a> (<a href="https://filmmusic.io/standard-license" target="_blank">License</a>)</li>
+      <li><a href="https://incompetech.filmmusic.io/song/4995-odyssey" target="_blank">Odyssey by Kevin MacLeod</a> (<a href="https://filmmusic.io/standard-license" target="_blank">License</a>)</li>
+      <li><a href="https://incompetech.filmmusic.io/song/5029-raving-energy/" target="_blank">Raving Energy by Kevin MacLeod</a> (<a href="https://filmmusic.io/standard-license" target="_blank">License</a>)</li>
+      <li><a href="https://incompetech.filmmusic.io/song/5715-screen-saver" target="_blank">Screen Saver by Kevin MacLeod</a> (<a href="https://filmmusic.io/standard-license" target="_blank">License</a>)</li>
+      <li><a href="https://incompetech.filmmusic.io/song/5009-the-lift" target="_blank">The Lift by Kevin MacLeod</a> (<a href="https://filmmusic.io/standard-license" target="_blank">License</a>)</li>
+    </ul>
+    <h3>Misc</h3>
+    <div class="p disclaimer">
+      <ul>
+        <li>
+          <a href="https://www.flaticon.com/free-icons/mouse-clicker" target="_blank" title="mouse clicker icons">Mouse clicker icons created by Freepik - Flaticon</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="contribute" class="popup" hidden>
+  <h2>
+    <span>Contribute</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p notPremium">
+      Help support Squaredle by signing up for
+      <a href="#" class="premiumBtn" data-button="contribute-premium">
+        Squaredle Squared</a>
+      and get access to premium settings and content!
+      <span class="trialAvailable">
+        All subscriptions start
+        with a
+        <a href="#" class="premiumBtn" data-button="contribute-premium">
+          <strong>7-day free trial</strong></a>.
+      </span>
+    </div>
+    <div class="p premium">
+      Thanks for being a Squaredle Squared member!
+    </div>
+    <hr class="notPremium">
+    <div class="p">
+      You can also
+      <a href="https://ko-fi.com/squaredle" target="_blank"
+          class="kofi-link"
+          data-button="contribute-contribute">
+        donate directly to Squaredle</a>.
+      All donation revenue goes toward costs to support Squaredle's growing
+      user base, like servers and licenses.
+    </div>
+    <div class="p">
+      <div class="btn-container">
+        <a title="Support us on ko-fi.com" class="kofi-button kofi-link"
+            href="https://ko-fi.com/D1D8BRE2H" target="_blank"
+            data-button="contribute-support">
+          <span class="kofitext">
+            <img class="kofiimg" aria-hidden="true">Support Squaredle
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="register" class="popup preventEscape" hidden>
+  <h2>
+    <span>Register</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <!-- action and method help password managers recognize the form. -->
+    <form id="registerForm" action="register.php" method="POST">
+      <div class="p">
+        Tie your account to your email address to safeguard your scores,
+        streaks &amp; username.
+      </div>
+      <div class="p" id="safariWarning" hidden>
+        <em>Especially important since you're on Safari, which likes to
+        erase website data.</em>
+      </div>
+      <div class="p secondary">
+        Already registered?
+        <a href="#" class="signInBtn" data-button="register-signIn">
+          Sign in instead
+        </a>
+      </div>
+      <div class="p form">
+        <label>Email:</label>
+        <input type="email" id="registerEmail" maxlength="255"
+          autocomplete="username" class="sentry-mask">
+        <label>Password:</label>
+        <input type="password" id="registerPassword"
+          minlength="8" maxlength="255"
+          autocomplete="new-password" class="sentry-mask">
+        <label>Confirm:</label>
+        <input type="password" id="registerConfirmPassword"
+          minlength="8" maxlength="255"
+          autocomplete="new-password" class="sentry-mask">
+      </div>
+      <div class="p">
+        <label class="toggle">
+          <span class="switch">
+            <input type="checkbox" id="emailSignUpToggle" checked
+              data-button="register-emailSignUpToggle">
+            <span class="slider"></span>
+          </span>
+          <span class="disclaimer">Send weekly score recaps and <em>occasional</em> news</span>
+        </label>
+      </div>
+      <div class="p" id="registerStatus" hidden></div>
+      <div class="p" id="registerSignInInstead" hidden>
+        Do you need to
+        <a href="#" class="signInBtn" data-button="register-signInInstead">
+          sign in</a> instead?
+      </div>
+      <div class="p formSubmit">
+        <button id="registerSubmit" type="submit" class="primaryButton"
+          data-button="register-submit">
+          Register
+        </button>
+      </div>
+      <div class="p disclaimer">
+        We'll never spam or share your email. It's just to provide you access to
+        your account and provide occasional updates.
+      </div>
+    </form>
+    <div class="p" id="registerSuccess" hidden>
+      Great! You can now sign in on other devices. Or just keep playing by
+      <a href="#" class="closeBtn">closing this window</a>.
+    </div>
+  </div>
+</div>
+
+<div id="signIn" class="popup preventEscape" hidden>
+  <h2>
+    <span>Sign in</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <!-- action and method help password managers recognize the form. -->
+    <form id="signInForm" action="sign-in.php" method="POST">
+      <div class="p">
+        Sign in to recover your scores, streaks &amp; username.
+      </div>
+      <div class="p secondary">
+        Haven't signed up yet?
+        <a href="#" class="registerBtn" data-button="signIn-register">
+          Register here</a>
+      </div>
+      <div class="p form">
+        <label>Email:</label>
+        <input type="email" id="signInEmail" maxlength="255"
+          autocomplete="username" class="sentry-mask">
+        <label>Password:</label>
+        <input type="password" id="signInPassword"
+          minlength="8" maxlength="255"
+          autocomplete="current-password" class="sentry-mask">
+      </div>
+      <div class="p" id="signInStatus" hidden></div>
+      <div class="p" id="requestPasswordResetSuccess" hidden>
+        If you have an account with that email address, a password reset link
+        has been emailed to you.
+      </div>
+      <div class="p formSubmit">
+        <button id="signInSubmit" type="submit" class="primaryButton"
+          data-button="signIn-submit">
+          Sign in
+        </button>
+      </div>
+    </form>
+    <div class="p" id="signInForgotPassword">
+      Forgot your password?
+      <a href="#" id="requestPasswordReset"
+        >Request a password reset email.</a>
+    </div>
+    <div class="p" id="signInSuccess" hidden>
+      Sign-in successful.
+      <span id="signInReload" hidden>Reloading...</span>
+      <span id="signInFinished" hidden>
+        Your data has been synced. You can now
+        <a href="#" class="closeBtn">close this window</a>.
+      </span>
+    </div>
+  </div>
+</div>
+
+<div id="resetPassword" class="popup preventEscape" hidden>
+  <h2>
+    <span>Reset password</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <!-- action and method help password managers recognize the form. -->
+    <form id="resetPasswordForm" action="sign-in.php" method="POST">
+      <div class="p">
+        Reset your password.
+      </div>
+      <p id="resetPasswordEmailLine">
+        Email: <strong id="resetPasswordEmail"></strong>
+      </p>
+      <input type="email" autocomplete="username" class="sentry-mask" hidden>
+      <div class="p form">
+        <label>New password:</label>
+        <input type="password" id="resetPasswordPassword"
+          class="sentry-mask"
+          minlength="8" maxlength="255"
+          autocomplete="new-password">
+        <label>Confirm:</label>
+        <input type="password" id="resetPasswordConfirmPassword"
+          class="sentry-mask"
+          minlength="8" maxlength="255"
+          autocomplete="new-password">
+      </div>
+      <div class="p" id="resetPasswordStatus" hidden></div>
+      <div class="p formSubmit">
+        <button id="resetPasswordSubmit" type="submit" class="primaryButton"
+            data-button="resetPassword-submit">
+          Reset password
+        </button>
+      </div>
+    </form>
+    <div class="p" id="resetPasswordSuccess" hidden>
+      Password has been reset.
+      <span class="registerSuggestion">
+        Please
+        <a href="#" class="signInBtn" data-button="resetPassword-signIn"
+          >sign in</a> with your updated password.
+      </span>
+    </div>
+    <div class="p" id="resetPasswordFailure" hidden>
+      Your password reset link is expired.
+      <span class="registerSuggestion">
+        Please
+        <a href="#" class="signInBtn" data-button="resetPassword-signIn"
+          >sign in or request a password reset</a> again.
+      </span>
+    </div>
+  </div>
+</div>
+
+<div id="signedIn" class="popup" hidden>
+  <h2>
+    <span>Signed in</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      You're signed in as <span class="signedInEmail"></span>.
+    </div>
+    <div class="p">
+      Your progress will sync with other devices you sign into.
+    </div>
+    <div class="p">
+      <button class="primaryButton" id="signOutBtn">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<div id="settings" class="popup" hidden>
+  <h2>
+    <span>Settings</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p notPremium offerAvailable">
+      <strong><a href="#" class="premiumBtn gold"
+          data-button="settings-premium-top">
+        Get Squaredle Squared</a></strong> &mdash;
+      25% off your first year!
+    </div>
+    <!-- TODO: Show another re-enable auto-renew button at top along with
+      expiration warning for suspended subs -->
+    <div id="subscriptionPaymentFailed" hidden>
+      <div class="p error">
+        <strong>Subscription payment failed</strong>
+      </div>
+      <div class="p">Please check your payment method.</div>
+      <div class="p premium" id="subscriptionDetailsForm2">
+        <form method="POST" action="/api/manage_billing.php">
+          <input type="hidden" name="uuid">
+          <button type="submit" class="primaryButton"
+            data-button="premiumManage">
+            Billing details
+            <svg class="inline-icon"><use href="#icon-open-in-new" /></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="p">
+      <button id="accountBtn" class="icon-button inline-icon registerBtn"
+        aria-label="your account"
+        data-button="settings-accountRegister">
+        <svg><use href="#icon-account-plus" /></svg>
+      </button>
+      <span class="registerSuggestion">
+        <a href="#" class="registerBtn"
+          data-button="settings-register">Register</a>
+        or
+        <a href="#" class="signInBtn" data-button="settings-signIn">sign in</a>
+      </span>
+      <span class="signedInStatus" hidden>
+        <a href="#" class="registerBtn" data-button="settings-signedIn">
+          Signed in</a> as
+        <span class="signedInEmail"></span>
+      </span>
+    </div>
+    <div class="p">
+      <label class="toggle">
+        <span class="switch">
+          <input type="checkbox" id="darkModeToggle" checked
+            data-button="settings-darkModeToggle">
+          <span class="slider"></span>
+        </span>
+        Dark mode
+      </label>
+    </div>
+    <div class="p">
+      <label class="toggle wide">
+        <span class="switch">
+          <input type="checkbox" id="rightHandedToggle" checked
+            data-button="settings-rightHandedToggle">
+          <span class="slider"></span>
+        </span>
+        Right-handed mode
+      </label>
+    </div>
+    <div class="p">
+      <label class="toggle">
+        <span class="switch">
+          <input type="checkbox" id="showTimerToggle"
+            data-button="settings-showTimerToggle">
+          <span class="slider"></span>
+        </span>
+        Show timer at bottom
+      </label>
+    </div>
+    <div class="p">
+      <label class="toggle">
+        <span class="switch">
+          <input type="checkbox" id="largerUsageCountsToggle"
+            data-button="settings-largerUsageCountsToggle">
+          <span class="slider"></span>
+        </span>
+        Enlarge small text
+        <button aria-controls="largerUsageCountsToggleHelp"
+          class="icon-button" aria-label="help">
+          &nbsp;<svg><use href="#icon-help-outline" /></svg>
+        </button>
+      </label>
+    </div>
+    <div id="largerUsageCountsToggleHelp" class="p helpText" hidden>
+      Increases the size of some UI elements, including the small numbers in
+      each square indicating how often the squares are used, and the timer (if
+      shown).
+    </div>
+
+    <div class="p form">
+      <span>Theme:</span>
+      <select id="themeColorSelect">
+        <option value="blue">Blue</option>
+        <option value="red">Red</option>
+        <option value="teal">Teal</option>
+        <option value="purple">Purple</option>
+        <option value="green">Green</option>
+        <option value="black">Black</option>
+        <option value="orange">Orange</option>
+        <option value="beige">Beige (dark)</option>
+        <option value="gold">Gold (dark)</option>
+        <option value="peach">Peach</option>
+      </select>
+    </div>
+
+    <div class="p">
+      <button id="audioBtn" class="primaryButton">
+        <svg class="inline-icon"><use href="#icon-audio"></use></svg>
+        Audio
+      </button>
+    </div>
+    <div id="enterExitBeta" hidden>
+      <div class="p">
+        <span id="enterExitBetaDesc"></span>
+        <a href="/beta-faqs.html" target="_blank">Beta FAQs</a>
+      </div>
+      <div class="p">
+        <button id="enterExitBetaBtn" class="primaryButton"></button>
+        <span class="updating"></span>
+      </div>
+    </div>
+    <div id="settingsPremium">
+      <hr>
+      <h3>
+        <a href="#" class="premiumBtn gold"
+          data-button="settings-premium-header">
+          <svg class="inline-icon"><use href="#icon-premium" /></svg>
+          Squaredle Squared
+        </a>
+      </h3>
+      <div class="p notPremium">
+        Support the game with
+        <a href="#" class="premiumBtn gold" data-button="settings-premium">
+          Squaredle Squared</a>
+        to hide ads and unlock the
+        <strong class="premiumBtn gold">puzzle archive</strong>
+        and replays, weekly specials, customization options, 45° board
+        rotation, extra hints, and a cool badge on the leaderboard.
+        Plus 15% off
+        <a href="https://merch.squaredle.app" target="_blank" class="merchBtn">
+          merch</a>!
+      </div>
+
+      <div class="p">
+        <div class="p form">
+          <span>Game font:</span>
+          <select id="themeFontSelect">
+            <option value="roboto">Roboto</option>
+            <option value="wordly">Wordly</option>
+            <option value="mono">Mono</option>
+            <option value="serif">Serif</option>
+            <option value="roman">Roman</option>
+            <option value="typed">Typed</option>
+            <option value="cursive">Cursive</option>
+            <option value="script">Script</option>
+            <option value="hand">Hand</option>
+            <option value="meow">Meow</option>
+          </select>
+        </div>
+      </div>
+      <div class="p">
+        <label class="toggle">
+          <span class="switch">
+            <input type="checkbox" id="rotate45Toggle"
+              data-button="settings-boardRotate45Toggle">
+            <span class="slider"></span>
+          </span>
+          Rotate board 45°
+        </label>
+        <div id="rotateReload" class="below" hidden>
+          <span class="disclaimer">
+            <a href="#" id="rotateReloadBtn">
+              Reload to take effect
+            </a>
+          </span>
+        </div>
+      </div>
+      <div class="p">
+        <label class="toggle">
+          <span class="switch">
+            <input type="checkbox" id="levelUpFasterToggle"
+              data-button="settings-levelUpFasterToggle">
+            <span class="slider"></span>
+          </span>
+          Unlock perks (slightly) faster
+        </label>
+        <div id="levelUpFasterReload" class="below" hidden>
+          <span class="disclaimer">
+            <a href="#" id="levelUpFasterReloadBtn">
+              Reload to take effect
+            </a>
+          </span>
+        </div>
+      </div>
+
+      <div class="p premium" id="loadingSubscription">
+        Loading subscription details...
+      </div>
+      <div class="p" id="noSubscriptionFound" hidden>
+        It looks like you have Squaredle Squared, but a bug is preventing your
+        subscription status from being shown here. Please send feedback or
+        contact <span class="email"></span> if you need to change or cancel your
+        subscription. Sorry!
+      </div>
+      <div id="subscriptionExpired" hidden>
+        <div class="p error">Your subscription has expired.</div>
+        <div class="p">
+          <a href="#" id="subscriptionExpiredReload">Reload to re-subscribe</a>
+        </div>
+      </div>
+      <div id="subscriptionDetails" hidden>
+        <div class="p" id="subscriptionGift" hidden>
+          Enjoy your gift membership!
+        </div>
+        <div class="p">You get 15% off at the
+          <a href="https://merch.squaredle.app" target="_blank" class="merchBtn">
+            Squaredle Shop</a> (applied automatically).
+        </div>
+        <div class="p" id="subscriptionPeriodEnd" hidden>
+          <span id="subscriptionRenewText">
+            Your <span id="subscriptionPeriod"></span> subscription will
+            <span id="subscriptionRenewOrBegin">renew</span>
+            on
+          </span>
+          <span id="subscriptionExpireText">
+            Your
+            <span id="subscriptionOrTrial"></span>
+            will expire on
+          </span>
+          <span id="subscriptionEndDate"></span><span id="subscriptionTrialEnds">
+            when your trial ends</span>.
+        </div>
+        <div class="p error" id="subscriptionAutoRenewError">
+        </div>
+        <div class="p" id="subscriptionReenable" hidden>
+          <button class="secondaryButton">Enable auto-renew</button>
+        </div>
+        <div class="p" id="subscriptionDisable" hidden>
+          <button class="primaryButton">Disable auto-renew</button>
+        </div>
+      </div>
+
+      <div class="p premium" id="subscriptionDetailsForm">
+        <form method="POST" action="/api/manage_billing.php">
+          <input type="hidden" name="uuid">
+          <button type="submit" class="primaryButton"
+            data-button="premiumManage">
+            Billing details
+            <svg class="inline-icon"><use href="#icon-open-in-new" /></svg>
+          </button>
+        </form>
+      </div>
+      <div class="p notPremium">
+        <a href="#" class="premiumBtn gold" data-button="settings-premium">
+          Get Squaredle Squared</a>
+<!--        <span class="giftSubSale" hidden>(25% off until March 14)</span>-->
+      </div>
+      <div class="p">
+        <a class="gold giftSubLink" href="#" data-source="settings">
+          Send a gift membership</a>
+        <span class="giftSubSale" hidden>(33% off until May 14)</span>
+      </div>
+      <div class="p">
+        <a class="gold" href="#" id="enterGiftCode">Redeem a gift code</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="giftCode" class="popup" hidden>
+  <h2>
+    <span>Gift code</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div>
+      <div class="p">
+        Redeem your gift code here.
+      </div>
+      <div class="p">
+        <form id="giftCodeForm" accept-charset="utf-8">
+          <input type="text" id="giftCodeText" placeholder="Gift code"
+            maxlength="36">
+          <br>
+          <button id="submitGiftCode" class="primaryButton" type="submit">
+            Redeem
+          </button>
+        </form>
+      </div>
+      <div class="p" id="giftCodeSuccess" hidden>
+        Successfully applied a <span id="giftCodeDuration"></span> of Squaredle
+        Squared! Please
+        <a href="#" class="refreshBtn">refresh</a>
+        to access premium features and remove ads.
+      </div>
+      <div class="p error"></div>
+      <div class="p disclaimer" id="giftCodeBeta" hidden>
+        If you have problems applying your gift code,
+        please <a href="#" class="sendFeedbackBtn">submit feedback</a>
+        and we'll sort it out!
+      </div>
+    </div>
+    <div id="giftCodeRegister" hidden>
+      <div class="p">
+        Please
+        <a href="#" class="registerBtn">register</a> or
+        <a href="#" class="signInBtn">sign in</a>
+        first, then return here to apply the gift code to your account.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="audioSettings" class="popup" hidden>
+  <h2>
+    <span>Audio</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      Audio is experimental and may cause performance issues on iOS devices.
+    </div>
+    <div class="p form">
+      <label class="rangeSlider">
+        <span class="largeScreen">Background music</span>
+        <span class="smallScreen">Music</span>
+      </label>
+      <div>
+        <button id="musicMute" class="icon-button" aria-label="mute music"
+          data-button="settings-musicMute">
+          <svg class="inline-icon"><use href="#icon-audio-muted" /></svg>
+        </button>
+        <span class="notIOS">
+          <input type="range" min="0" max="100" value="0" id="musicVolume">
+        </span>
+      </div>
+      <label class="rangeSlider">
+        <span class="largeScreen">Sound effects</span>
+        <span class="smallScreen">Effects</span>
+      </label>
+      <div>
+        <button id="soundEffectsMute" class="icon-button"
+          aria-label="mute effects" data-button="settings-soundEffectsMute">
+          <svg class="inline-icon"><use href="#icon-audio" /></svg>
+        </button>
+        <span class="notIOS">
+          <input type="range" min="0" max="100" value="50" id="soundEffectsVolume">
+        </span>
+      </div>
+    </div>
+    <div class="p">
+      <label class="toggle">
+        <span class="switch">
+          <input type="checkbox" id="autoEnableAudioToggle"
+            data-button="settings-autoEnableAudioToggle">
+          <span class="slider"></span>
+        </span>
+        Auto-enable audio
+      </label>
+      <div id="autoEnableAudioDesc" class="below" hidden>
+        <span class="disclaimer">
+          Audio will start the first time you interact with the page (or, on
+          some devices, as soon as you load the page).
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sh4re" class="popup" hidden>
+  <h2>
+    <span>Share</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <pre id="shareContent"></pre>
+    <div class="disclaimer" id="shareNotice"></div>
+    <div id="oopsShareNotice" class="error"></div>
+    <div id="sh4reButtons">
+      <div id="fbButton" hidden>
+        <a href="#" id="fbA">
+          <div>
+            <button id="fbBtn" data-button="share-facebook" class="actualSh4reBtn">
+              <span></span><div>
+                <span id="fbLogo"><span id="fbValign"><img src="https://s.squaredle.app/assets/icons/fb.png" width="16" height="16"></span>
+                </span><span id="fbShare"><!--Share--></span><span id="fbCount" hidden></span>
+              </div>
+            </button>
+          </div>
+        </a>
+      </div>
+      <div id="twitterButton">
+        <div id="twitterWidget">
+          <div id="twitterBtnO">
+            <a id="shareToTwitter" target="_blank" class="actualSh4reBtn"
+              data-button="share-twitter">
+              <i></i><!--<span></span>-->
+            </a>
+          </div>
+        </div>
+      </div>
+      <button id="shareContentShareBtn" data-button="share-share"
+        class="primaryButton actualSh4reBtn" hidden>
+        <svg class="inline-icon sh4re-v2"><use href="#icon-share-variant" /></svg>
+        Share
+      </button>
+      <button id="shareContentCopyBtn" data-button="share-copy"
+        class="primaryButton actualSh4reBtn">Copy</button>
+    </div>
+    <div class="p" id="copyStatus"></div>
+    <div class="p" id="shareForHint" hidden>
+      Share to get a hint for the Bonus Word of the Day.
+    </div>
+    <div class="p" id="sharedGetHint" hidden>
+      Bonus Word of the Day hint:
+      <span id="bwotdHint">
+        <a href="#" id="bwotdHintBtn" data-button="share-bwotdHint">
+          Tap to reveal
+        </a>
+      </span>
+    </div>
+    <div class="p iconRow" id="shareDiscordPlug" hidden>
+      <a class="inlineDiscord" href="https://discord.gg/Pkad9p4rsq"
+        target="_blank" data-button="share-discord-icon">
+        <img src="https://s.squaredle.app/assets/icons/discord.png" class="dark" width="24" height="27">
+        <img src="https://s.squaredle.app/assets/icons/discord-light.png" class="light" width="24" height="27">
+      </a>
+      <span>
+      Chat about this puzzle with other players and the puzzle author in our
+      <a href="https://discord.gg/Pkad9p4rsq" target="_blank"
+        data-button="share-discord">
+        Discord community</a>!
+      </span>
+    </div>
+    <div class="regularPuzzle">
+      <div class="p difficultyNote" hidden>
+        <span>Today's difficulty:</span>
+        <span class="difficultyStars"></span>
+      </div>
+      <div class="p" id="nextBoardCountdown">
+        Next board in <span id="boardTimer"></span>
+      </div>
+      <div class="p" id="nextBoardRefresh" hidden>
+        New board available!
+        <a href="#" class="refreshBtn" data-button="share-newBoardRefresh">Refresh to play.</a>
+      </div>
+    </div>
+    <div class="p" id="shareCanuckle" hidden>
+      This puzzle is part of Squaredle's celebration of Canadian Thanksgiving.
+      For more Canadian fun, check out the hosers at
+      <a href="https://canucklegame.ca/" target="_blank"
+        data-button="share-canuckle">Canuckle</a>.
+    </div>
+    <div class="p" id="shareCanuckle2" hidden>
+      Happy Canada Day! For more Canadian fun, check out the hosers at
+      <a href="https://canucklegame.ca/" target="_blank"
+        data-button="share-canuckle">Canuckle</a>.
+    </div>
+    <div class="p" id="shareWaffle" hidden>
+      This puzzle is a tribute to
+      <a href="https://wafflegame.net" target="_blank"
+        data-button="share-waffle">Waffle</a>, a fun daily word puzzle.
+      Give it a try!
+    </div>
+    <div class="specialPuzzle" hidden>
+      <div class="p">
+        You're playing a special puzzle right now.
+        Squaredle publishes a new puzzle every day.
+      </div>
+      <div class="p" id="sub500MakingOf" hidden>
+        Read about the making of this puzzle in
+        <a href="https://blog.squaredle.app/making-of-squaredle"
+          target="_blank">The Making of a Squaredle</a>!
+      </div>
+    </div>
+    <div class="p" id="kwanzaa" hidden>
+      Happy Kwanzaa! Enjoy this special puzzle.
+      <a href="?puzzle=kwanzaa">
+        Play Kwanzaa puzzle
+      </a>
+    </div>
+    <div class="p" id="xmas" hidden>
+      Merry Christmas! Santa has brought us a special puzzle.
+      <a href="?puzzle=xmas">
+        Play Christmas puzzle
+      </a>
+    </div>
+    <div class="p" id="hannukah" hidden>
+      Happy Hanukkah! A fellow Squaredler has commissioned a puzzle in
+      celebration of this holiday:
+      <a href="?puzzle=hannukah">
+        Play Hanukkah puzzle
+      </a>
+    </div>
+    <div class="notTodayPuzzle" hidden>
+      <button class="primaryButton" data-button="share-playToday"
+        id="sharePlayToday">
+        Play today's daily puzzle
+      </button>
+    </div>
+    <div>
+      <button class="primaryButton" data-button="share-playRegular"
+        id="sharePlayRegular" hidden>
+        Play standard Squaredle
+      </button>
+    </div>
+    <div>
+      <button class="primaryButton" data-button="share-playExpress"
+        id="sharePlayExpress" hidden>
+        Play Squaredle Express
+      </button>
+    </div>
+    <div class="p">
+      <button class="secondaryButton" data-button="share-past-archives"
+        id="shareArchives">
+        <svg class="inline-icon"><use href="#icon-premium" /></svg>
+        Play past puzzles
+      </button>
+    </div>
+    <div class="p" id="shareWaffleButton" hidden>
+      <button class="secondaryButton" data-button="share-waffle">
+        Go to Waffle
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="leaderboards" class="popup tabbed" hidden>
+  <h2>
+    <span>Leaderboard</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="tabs">
+      <div role="tablist">
+        <button type="button" role="tab" aria-selected="true"
+            aria-controls="globalScoresTab">
+          <span class="largeScreen">Global scores</span>
+          <span class="smallScreen">World</span>
+        </button>
+        <button type="button" role="tab" aria-selected="false"
+            aria-controls="yourScoresTab">
+          <span class="largeScreen">Your scores</span>
+          <span class="smallScreen">You</span>
+        </button>
+      </div>
+
+      <div role="tabpanel" id="globalScoresTab">
+        <div class="p form">
+          <label>Name:</label>
+          <input type="text" id="leaderboardName" maxlength="14"
+            placeholder="Anonymous" class="sentry-mask">
+        </div>
+        <div class="p disclaimer registerSuggestion">
+          <a href="#" class="registerBtn">Register</a> to keep your username.
+        </div>
+        <div id="leaderboardsNameError" class="error" hidden></div>
+        <div class="p disclaimer">
+          Sorted by score &amp; words. Tiebreaker:<br>
+          <label>
+            <input type="radio" name="sortRadio" value="bonus words"
+              data-button="leaderboards-sortBonusWords">
+            <span>bonus words</span>
+            <button aria-controls="leaderboardSortBonusHelp"
+              class="icon-button" aria-label="help">
+              <svg><use href="#icon-help-outline" /></svg>
+            </button>
+          </label>
+          |
+          <label>
+            <input type="radio" name="sortRadio" value="accuracy"
+              data-button="leaderboards-sortAccuracy">
+            <span>accuracy</span>
+            <button aria-controls="leaderboardSortAccuracyHelp"
+              class="icon-button" aria-label="help">
+              <svg><use href="#icon-help-outline" /></svg>
+            </button>
+          </label>
+          |
+          <label>
+            <input type="radio" name="sortRadio" value="speed"
+              data-button="leaderboards-sortSpeed">
+            <span>speed</span>
+            <button aria-controls="leaderboardSortSpeedHelp"
+              class="icon-button" aria-label="help">
+             <svg><use href="#icon-help-outline" /></svg>
+            </button>
+          </label>
+        </div>
+        <div id="leaderboardSortBonusHelp" class="p helpText disclaimer" hidden>
+          Sorts by the number of bonus words found.
+        </div>
+        <div id="leaderboardSortAccuracyHelp" class="p helpText disclaimer" hidden>
+          Sorts by the percent of guessed words that are correct. Ignores
+          bonus words.
+        </div>
+        <div id="leaderboardSortSpeedHelp" class="p helpText disclaimer" hidden>
+          Sorts by how long you spend on the puzzle. Your timer pauses when your
+          browser is in the background, your screen is off, or a popup is open
+          (like this one). After you've solved the puzzle, finding bonus words
+          doesn't count against your time.
+        </div>
+        <div class="p">
+          <label class="toggle">
+            Global
+            <span class="switch">
+              <input type="checkbox" id="favoritesToggle">
+              <span class="slider"></span>
+            </span>
+            Favorites
+          </label>
+        </div>
+        <div class="p" id="leaderboardsFetchError" hidden style="text-align: center;"></div>
+        <div class="p" id="leaderboardsLoading">
+          <!--Loading...-->
+        </div>
+        <div class="tableContainer">
+          <table hidden>
+            <thead>
+              <tr>
+                <th colspan="2"></th>
+                <th colspan="2">Name
+                  <span style="float: right;">Score/Words/Bonus</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <div class="bottomSection">
+          <div id="playerCount" hidden></div>
+          <div id="yourRank" hidden>
+            You're <span id="pctRank"></span>
+            by <span id="pctRankBy"></span><span id="pctRankSuffix"></span>
+          </div>
+          <div>
+            <a href="#" id="compareWithFriendsLink" class="secondary">
+              Compare with friends
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div role="tabpanel" id="yourScoresTab" hidden>
+        <div id="yourScoresGraph">
+          <div class="yAxis">
+            <span class="y100">100% -</span>
+            <span class="y50">50% -</span>
+            <span class="y0">0% -</span>
+          </div>
+          <div class="graph">
+            <div class="columns">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div class="weekdays">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+        <table>
+          <tr>
+            <td>
+              <span id="yourPlayStreakFire" hidden
+                >&#128293;&nbsp;</span><span id="yourPlayStreak"></span>
+            </td>
+            <td>
+              streak (days played)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span id="yourSolveStreakFire" hidden
+                >&#128293;&nbsp;</span><span id="yourSolveStreak"></span>
+            </td>
+            <td>
+              solve streak (days solved)
+            </td>
+          </tr>
+          <tr>
+            <td id="yourPuzzleCount"></td>
+            <td>
+              puzzles played
+            </td>
+          </tr>
+          <tr>
+            <td id="yourPuzzleSolvedCount"></td>
+            <td>
+              puzzles solved
+            </td>
+          </tr>
+          <tr>
+            <td id="yourPuzzleAvgScore"></td>
+            <td>
+              average score
+            </td>
+          </tr>
+          <tr><td colspan="2"><hr></td></tr>
+          <tr>
+            <td><span class="yourScorePct"></span>%</td>
+            <td>
+              <span class="maybeToday">current</span> score
+              (<span class="yourScore"></span>/<span class="maxScore"></span>)
+            </td>
+          </tr>
+          <tr>
+            <td><span class="yourAccuracy"></span></td>
+            <td>
+              <span class="maybeToday">current</span> accuracy
+            </td>
+          </tr>
+          <tr><td colspan="2">&nbsp;</td></tr>
+          <tr>
+            <td><span class="avgScorePct">...</span>%</td>
+            <td>
+              <span class="maybeToday">current</span> global average score
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+ </div>
+</div>
+
+<div id="inviteFriends" class="popup" hidden>
+  <h2>
+    <span>Invite friends</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p secondary" id="invitedByFriend" hidden>
+      You are now following <strong class="username">this user</strong> on
+      Squaredle! You can find them in the
+      <button class="icon-button leaderboardsBtn" aria-label="leaderboards"
+        data-button="header-leaderboards">
+        <svg class="inline-icon"><use href="#icon-chart" /></svg>
+      </button>
+      <a href="#" class="leaderboardsBtn">leaderboards</a>
+      when you view by Favorites, if they've played today.
+    </div>
+    <div id="inviteFriendsWithUserId">
+      <div class="p">Invite your friends to Squaredle with a special link.</div>
+      <div class="p">
+        This link will let them automatically favorite you in the
+        leaderboards so they can compare their score with yours. To find them in
+        the leaderboards, ask for their link!
+      </div>
+      <div class="p">
+        Your Squaredle link: <span id="inviteLink" class="secondary"></span>
+      </div>
+      <div class="p" id="inviteLinkCopied" hidden>
+        Copied to clipboard!
+      </div>
+      <div class="p disclaimer">Tap or long-press to copy.</div>
+    </div>
+  </div>
+</div>
+
+<div id="newVersionAvailable" class="popup" hidden>
+  <h2>
+    <span>Refresh to upgrade</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">A new version of Squaredle was released!</div>
+    <div class="p">
+      <a href="#" id="newVersionRefresh" class="secondary">
+        Tap to refresh</a>
+      for new features and bug fixes.
+    </div>
+    <div class="p" id="cacheUsed" hidden>
+      If you are seeing this screen several times in a row, your browser may be
+      loading an older version of the site. Try clearing your browser cache (but
+      not your cookies).
+    </div>
+  </div>
+</div>
+
+<div id="nextBoardAvailable" class="popup" hidden>
+  <h2>
+    <span>New board available</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      Today's new board is here!
+    </div>
+    <div class="p">
+      <strong><a href="#" id="newBoardRefresh" class="secondary"
+        data-button="newBoardRefresh">
+        Refresh to play.</a></strong>
+    </div>
+    <div class="p notPremium">
+      Upgrade to
+      <svg class="inline-icon"><use href="#icon-premium" /></svg>
+      <a href="#" class="gold premiumBtn"
+        data-button="newBoardRefresh-premium">
+        Squaredle Squared</a>
+      to play yesterday's puzzle and the rest of the archive, remove ads, and
+      more.
+    </div>
+  </div>
+</div>
+
+<div id="wordOfTheDay" class="popup" hidden>
+  <h2>
+    <span>Bonus Word of the Day</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p" id="foundWordOfTheDay">
+      <em>
+        You've earned a free <strong>word reveal</strong>!
+        Check the word list to use it.
+      </em>
+    </div>
+    <h3>
+      <a id="wordOfTheDayTerm" href="#" target="_blank"
+        data-button="wordOfTheDayDefinition"></a>
+      <span id="wordOfTheDayPronunciation"></span>
+    </h3>
+    <div class="p" id="wordOfTheDayDefinition"></div>
+    <div class="p" id="wordOfTheDayCredits"></div>
+  </div>
+</div>
+
+<div id="privacy" class="popup" hidden>
+  <h2>
+    <span>Privacy</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      <a href="/privacy" target="_blank">See Privacy Policy</a>
+    </div>
+    <div class="notTutorial">
+      <div class="p">
+        <a href="#" id="consentLaunch" hidden>Set cookie choices</a>
+      </div>
+      <div class="p" id="consentStatus">
+        Loading consent manager. (Please ensure you are connected to the
+        Internet, and temporarily disable any ad blockers.)
+      </div>
+    </div>
+    <div class="p tutorial">
+      To set your privacy choices for Squaredle, first skip
+      or complete this tutorial.
+    </div>
+  </div>
+</div>
+
+<div id="puzzleMessage" class="popup" hidden>
+  <h2>
+    <span id="puzzleMessageTitle"></span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content" id="puzzleMessageBody">
+  </div>
+</div>
+
+<div id="waffleMessage" class="popup" hidden>
+  <h2>
+    <span>Waffle Squaredle</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      <a href="https://wafflegame.net/" target="_blank">Waffle</a> is a
+      Wordle-inspired game shaped like a waffle in which you swap letters
+      until you've formed all six words.
+      <a href="https://wafflegame.net/" target="_blank">Go play it!</a>
+    </div>
+    <div class="p">
+      This special Squaredle is actually a past Waffle, converted into a Squaredle puzzle for your enjoyment. Bon appétit!
+    </div>
+    <button class="closePopup primaryButton">
+      Play Waffle Squaredle
+    </button>
+  </div>
+</div>
+
+<div id="waffle2Message" class="popup" hidden>
+  <h2>
+    <span>Waffle Squaredle #2</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      <a href="https://wafflegame.net/" target="_blank">Waffle</a> is a
+      Wordle-inspired game shaped like a waffle in which you swap letters
+      until you've formed all six words.
+      <a href="https://wafflegame.net/" target="_blank">Go play it!</a>
+    </div>
+    <div class="p">
+      Have you already solved today's Waffle (#391)?
+      <strong>Now you can play this Waffle as a Squaredle puzzle!</strong>
+    </div>
+    <div class="p waffleSpoilerWarning primary">
+      Warning: Contains spoilers for
+      <a href="https://wafflegame.net/" target="_blank">Waffle #391</a>.
+    </div>
+    <button class="closePopup primaryButton">
+      Play Waffle Squaredle #2
+    </button>
+  </div>
+</div>
+
+<div id="waffleIngredientsMessage" class="popup" hidden>
+  <h2>
+    <span>Waffle Ingredients</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p fromWaffle">
+      Welcome, Waffle players!
+    </div>
+    <div class="p fromSquaredle">
+      <a href="https://wafflegame.net/" target="_blank">Waffle</a> is a
+      Wordle-inspired game shaped like a waffle in which you swap letters
+      until you've formed all six words.
+    </div>
+    <div class="p">
+      In <strong>Squaredle</strong>, the goal is to spell out words by swiping contiguous letters
+      in any direction (including diagonally).
+    </div>
+    <div class="p">
+      Can you find <strong>7 waffle ingredients</strong>?
+      <em>Hint: One ingredient is made up of 2 words you can find separately.</em>
+    </div>
+    <button class="closePopup primaryButton">
+      Find Waffle Ingredients
+    </button>
+  </div>
+</div>
+
+<div id="waffleTutorialMessage" class="popup" hidden>
+  <h2>
+    <span>Waffle Squaredle</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">Welcome, Waffle players!</div>
+    <div class="p">
+      Play this Waffle as a Squaredle puzzle by <strong>dragging from letter to
+        letter</strong> to spell out words. Can you find all the words hidden in
+      the Waffle?
+    </div>
+    <div class="p">
+      <strong>Play the tutorial</strong> to learn how to use the word list
+      and the keyboard (if you have one), or skip directly to the Squaredle puzzle.
+    </div>
+    <div class="p closeButtons">
+      <button class="closePopup primaryButton">
+        Play quick tutorial
+      </button>
+      <button class="skipTutorial basicButton">
+        Skip to Waffle Squaredle
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="canuckleTutorialMessage" class="popup" hidden>
+  <h2>
+    <span>Canada, Eh?</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      Squaredle is celebrating Canada with our daily puzzles this Monday thru
+      Wednesday!
+    </div>
+    <div class="p">
+      Play Squaredle by <strong>dragging from letter to letter</strong>
+      to spell out words. For another fun challenge, try the smaller Squaredle
+      Express puzzle found in the Share menu.
+    </div>
+    <div class="p">
+      <strong>Play a quick tutorial</strong> or skip directly to your Squaredle
+      puzzle.
+    </div>
+    <div class="p closeButtons">
+      <button class="closePopup primaryButton">
+        Play quick tutorial
+      </button>
+      <button class="skipTutorial basicButton">
+        Skip to Squaredle
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="unsupportedBrowser" class="popup" hidden>
+  <h2>
+    <span>Browser not supported</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      Sorry, your browser is too outdated to run this site.
+    </div>
+    <div class="p">
+      Please upgrade to a newer version of Chrome, Safari, Firefox, etc.
+    </div>
+    <div class="p disclaimer">
+      (<span id="unsupportedBrowserReason"></span>)
+    </div>
+  </div>
+</div>
+
+<div id="installPrompt" class="popup" hidden>
+  <h2>
+    <span>Install Squaredle</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      Install Squaredle as a standalone app for convenient access from your Home
+      screen.
+    </div>
+    <div class="p">
+      The app works the same as the website and requires no extra permissions.
+    </div>
+    <div class="p closeButtons">
+      <button id="installDontAskAgainBtn" class="basicButton"
+        data-button="installDontAskAgain">
+        Don't ask again
+      </button>
+      <button id="installBtn" class="primaryButton" data-button="install">
+        Install
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="dialog" class="popup" hidden>
+  <h2>
+    <span class="title"></span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+  </div>
+</div>
+
+<div id="debug" class="popup" hidden>
+  <h2>
+    <span>Error</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      Sorry, Squaredle has encountered an error. (Most errors are temporary, but we monitor them
+      to fix persistent issues.)
+    </div>
+    <div class="p"><a href="#" id="debugReload">Tap to reload page</a></div>
+    <div class="p debugDetails" id="debugLog"></div>
+  </div>
+</div>
+
+<div id="devOptions" class="popup" hidden>
+  <h2>
+    <span>Developer options</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      <strong>WARNING!</strong> This window is intended for developers.
+    </div>
+    <div class="p" id="restartTutorial">
+      <a href="#" id="restartTutorialLink">Restart tutorial</a>
+    </div>
+    <div class="p">
+      <a href="#" id="removeTwoWordsBtn">Remove two words</a>
+    </div>
+    <div class="p">
+      <a href="#" id="resetSolutionBtn">Reset today's solution</a>
+    </div>
+    <div class="p">
+      <a href="#" id="solveSolutionBtn">Solve today's puzzle</a>
+    </div>
+    <div class="p"><a href="#" id="showExplainerBtn">Show explainer</a></div>
+    <div class="p"><a href="#" id="resetExplainersBtn">Reset explainers</a></div>
+    <div class="p"><a href="#" id="resetMessagesBtn">Reset messages</a></div>
+    <div class="p">
+      <label>Date: <input type="date" id="puzzleDateSelector"></label>
+    </div>
+    <div class="p">
+      Networking errors
+      <br>
+      <textarea id="devErrors" rows="8">No errors detected</textarea>
+    </div>
+    <div class="p">
+      <button id="devGenDump">Generate debug data</button>
+      <a id="devDownloadDump" href="" download="squaredle.json" hidden>
+        Download
+      </a>
+    </div>
+    <div class="p">
+      Scroll: (<span id="scrollX"></span>, <span id="scrollY"></span>)
+    </div>
+  </div>
+</div>
+
+<div id="featureMessage" class="popup" hidden>
+  <h2>
+    <span></span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+  </div>
+</div>
+
+<div id="joinCommunity" class="popup" hidden>
+  <h2>
+    <span>Join the community</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      Join a Squaredle community to share your scores, discuss puzzles, give
+      feature suggestions and report bugs.
+    </div>
+    <div class="p">
+      <a href="https://discord.gg/Pkad9p4rsq" target="_blank"
+        data-button="joinCommunity-discord">
+        <img src="https://s.squaredle.app/assets/icons/discord.png" class="dark" width="24" height="27">
+        <img src="https://s.squaredle.app/assets/icons/discord-light.png" class="light" width="24" height="27">
+        Discord
+      </a>
+    </div>
+    <div class="p">
+      <a href="https://reddit.com/r/squaredle" target="_blank"
+        data-button="joinCommunity-reddit">
+        <img src="https://s.squaredle.app/assets/icons/reddit.png" width="24" height="24">
+        r/squaredle on Reddit
+      </a>
+    </div>
+    <div class="p">
+      <a href="https://twitter.com/SquaredleApp" target="_blank"
+        data-button="joinCommunity-twitter">
+        <img src="https://s.squaredle.app/assets/icons/twitter.png" width="24" height="20">
+        @SquaredleApp on Twitter
+      </a>
+    </div>
+    <div class="p">
+      <a href="https://www.facebook.com/groups/squaredleapp" target="_blank"
+        data-button="joinCommunity-facebook">
+        <img src="https://s.squaredle.app/assets/icons/facebook.png" width="24" height="24">
+        Facebook group
+      </a>
+    </div>
+    <hr>
+    <div class="p btn-container">
+      <a title="Support us on ko-fi.com" class="kofi-button kofi-link"
+          href="https://ko-fi.com/D1D8BRE2H" target="_blank"
+          data-button="joinCommunity-support">
+        <span class="kofitext">
+          <img class="kofiimg" aria-hidden="true">Support Squaredle
+        </span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="shop" class="popup" hidden>
+  <h2>
+    <span>Squaredle Shop</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      <a href="https://merch.squaredle.app" target="_blank"
+        data-button="shop-merch" class="merchBtn">
+        Squaredle merch</a>
+      is now available!
+    </div>
+    <div class="p">
+      <a href="https://merch.squaredle.app" target="_blank"
+        data-button="shop-image" class="merchBtn">
+        <img src="images/shop.png" style="max-width:100%">
+      </a>
+    </div>
+    <div class="p">
+      Visit the Squaredle Shop for special holiday pricing
+      <span class="notPremium">
+        and
+        <a href="https://merch.squaredle.app" target="_blank"
+          data-button="shop-sale" class="merchBtn">
+          5% off your order.
+        </a>
+      </span>
+      <span class="premium">
+        and, as a Squaredle Squared member, an exclusive
+        <a href="https://merch.squaredle.app" target="_blank"
+          data-button="shop-sale" class="merchBtn">
+          15% discount on your entire order</a>
+        (shown at checkout).
+      </span>
+    </div>
+  </div>
+</div>
+
+<div id="bonusWordDialog" class="popup delayClose" hidden>
+  <h2>
+    <span>Bonus word</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p" id="bonusWordFound" hidden>
+      You've found a <strong class="primary">bonus word</strong>!
+    </div>
+    <div class="p tutorial">
+      (In the tutorial puzzle, all words except the tutorial words are treated
+      as "bonus" words.)
+    </div>
+    <div class="p">
+      Bonus words make the base game easier by excluding obscure or questionable
+      words. Finding them won't progress your score, but they show up on the
+      leaderboards.
+    </div>
+    <div class="p">
+      Bonus words include:
+      <ul>
+        <li>Archaic, obscure or domain-specific words
+          <ul class="disclaimer">
+            <li><em>eyne, arty, graviton</em></li>
+          </ul>
+        </li>
+        <li>Non-American English words
+          <ul class="disclaimer">
+            <li><em>colour, tyre, brae</em></li>
+          </ul>
+        </li>
+        <li>Some slang
+          <ul class="disclaimer">
+            <li><em>holla, nosh</em></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="p">
+      There are usually about 2x more bonus words than required words. Bonus
+      words ensure that puzzles remain accessible to all, while recognizing
+      players' diverse vocabularies.
+    </div>
+  </div>
+</div>
+
+<div id="allBonusWordsFound" class="popup" hidden>
+  <h2>
+    <span>Wow!</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      You've found all <strong id="allBonusWordsCount"></strong>
+      bonus words today.
+    </div>
+    <img style="max-width: 100%">
+    <div class="p">Congrats!</div>
+  </div>
+</div>
+
+<div id="premiumSignup" class="popup" hidden>
+  <h2>
+    <div>
+      <svg class="inline-icon"><use href="#icon-squared" /></svg>
+      <span class="gold">
+        <span>
+          Squaredle Squared
+        </span>
+      </span>
+    </div>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      Sign up for <strong class="gold">Squaredle Squared</strong> to
+      remove ads and access premium settings &amp; content!
+    </div>
+    <div class="p">
+      <span class="trialAvailable">
+        All subscriptions start with a <strong>7-day free trial</strong>.
+      </span>
+    </div>
+    <div class="p" id="premiumSignupProcessing" hidden>
+      <strong>
+        Your subscription is being processed by
+        <span id="premiumSignupPlatform"></span>.
+        Please <a href="#" class="refreshBtn secondary">refresh</a> in a few
+        minutes.
+      </strong>
+    </div>
+
+    <div id="signup-intro">
+      <div class="p" id="saleInfo" hidden>
+        <strong class="gold">
+          Save 25% until January 10
+        </strong>
+        on your first year of subscriptions and on
+        <a class="giftSubLink gold" href="#" data-source="premiumSignup-sale">
+          gift memberships</a>.
+      </div>
+      <div class="p giftSubSale" hidden>
+          <strong>Father's Day Sale:</strong>
+          <a class="giftSubLink" href="#" data-source="premiumSignup-giftSale">
+              Send a gift membership</a>
+          to someone you love! 33% off, now through Monday.
+      </div>
+      <div class="p premiumSubscriptions">
+        <button id="subscribeMonthly" class="primaryButton"
+          data-button="premiumMonthly">
+          <span class="term">Monthly</span>
+          <span data-crossedout>$3<span class="cents">.99</span>/month</span>
+          <span class="offer gold price" hidden>$2<span class="cents">.99</span>/month</span>
+          <span class="offer gold duration" hidden>up to 12 months</span>
+          <span class="disclaimer">Cancel anytime</span>
+        </button>
+        <button id="subscribeAnnually" class="secondaryButton"
+          data-button="premiumAnnually">
+          <span class="term">Annually</span>
+          <span data-crossedout>$34<span class="cents">.99</span>/year</span>
+          <span class="offer gold price" hidden>$26<span class="cents">.24</span></span>
+          <span class="offer gold duration" hidden>for 1st year</span>
+          <span class="disclaimer">Save <span class="offer" hidden>an extra</span> 27%!</span>
+        </button>
+      </div>
+      <ul>
+        <li><strong>No ads!</strong></li>
+        <li><strong>Play the archive</strong> &mdash; peruse over a thousand
+          puzzles or just finish yesterday's!</li>
+        <li><strong>Enjoy 15% off</strong> at the
+          <a href="https://merch.squaredle.app" target="_blank" class="merchBtn">
+            Squaredle Shop</a>.</li>
+        <li><strong>Enjoy weekly specials</strong> &mdash; a new subscriber-only puzzle
+          every Monday.</li>
+        <li><strong>Play occasional subscriber-only special puzzles!</strong></li>
+        <li><strong>Replay puzzles</strong> as many times as you want.</li>
+        <li><strong>Change the board font</strong>.</li>
+        <li><strong>Unlock perks faster</strong> (optional) &mdash; get access to
+          the next
+          level of hints (like corner numbers) earlier in each puzzle.</li>
+        <li><strong>Reveal 4 extra words</strong> every day (4&ndash;6 letters each).</li>
+        <li>
+          <strong>Get a premium icon</strong>
+          <svg class="inline-icon"><use href="#icon-squared" /></svg>
+          next to your leaderboard scores.
+        </li>
+        <li><strong>Enable 45°</strong> board rotation.</li>
+        <li>
+          <strong>Get access to the Supporters Lounge</strong> in
+          <a href="https://discord.gg/Pkad9p4rsq" target="_blank"
+            data-button="premiumSignup-discord">Discord</a>.
+        </li>
+      </ul>
+      <div class="p">
+        Your Squaredle Squared membership supports development &amp; hosting
+        costs of Squaredle &mdash; <em>thank you!</em>
+      </div>
+      <div class="p premiumSubscriptions">
+        <button id="subscribeMonthly2" class="primaryButton"
+          data-button="premiumMonthly2">
+          <span class="term">Monthly</span>
+          <span data-crossedout>$3<span class="cents">.99</span>/month</span>
+          <span class="offer gold price" hidden>$2<span class="cents">.99</span>/month</span>
+          <span class="offer gold duration" hidden>up to 12 months</span>
+          <span class="disclaimer">Cancel anytime</span>
+        </button>
+        <button id="subscribeAnnually2" class="secondaryButton"
+          data-button="premiumAnnually2">
+          <span class="term">Annually</span>
+          <span data-crossedout>$34<span class="cents">.99</span>/year</span>
+          <span class="offer gold price" hidden>$26<span class="cents">.24</span></span>
+          <span class="offer gold duration" hidden>for 1st year</span>
+          <span class="disclaimer">Save <span class="offer" hidden>an extra</span> 27%!</span>
+        </button>
+      </div>
+      <div class="p">
+        You can also
+        <a class="giftSubLink" href="#" data-source="premiumSignup-intro">
+          purchase a gift membership</a>
+        for a friend<span class="giftSubSale" hidden> (33% off through Monday)</span>.
+      </div>
+      <div class="p" id="alreadyPremiumSignIn">
+        Already a Squared member?
+        <a href="#" class="signInBtn" data-button="premiumSignup-intro-signIn">
+          Sign in
+        </a>
+      </div>
+    </div>
+
+    <div id="signup-register" hidden>
+      <div class="p">
+        Please register with your email address first so we can save your
+        Squared subscription to your account.
+      </div>
+      <div class="p">
+        <a href="#" class="registerBtn"
+          data-button="premiumSignup-register-register">
+          Register
+        </a>
+      </div>
+      <div class="p">
+        <a href="#" class="signInBtn"
+          data-button="premiumSignup-register-signIn">
+          Sign in
+        </a>
+      </div>
+    </div>
+
+    <div id="signup-payNow" hidden>
+      <div class="p gold">
+        <span id="monthlySummary" hidden>
+          <span class="withoutOffer">
+            <strong>Monthly</strong> - $3<span class="cents">.99</span>/month
+          </span>
+          <span class="withOffer" hidden>
+            <strong>Monthly</strong> - $2<span class="cents">.99</span>/month
+            <br>
+            <span class="disclaimer">
+              for 12 months, then $3<span class="cents">.99</span>/month
+            </span>
+            <br>
+            <span class="disclaimer">disable auto-renewal from Settings anytime,
+              even during trial period</span>
+          </span>
+        </span>
+        <span id="annuallySummary" hidden>
+          <span class="withoutOffer">
+            <strong>Annually</strong> - $34<span class="cents">.99</span>/year
+          </span>
+          <span class="withOffer" hidden>
+            <strong>Annually</strong> - $26<span class="cents">.24</span>
+            <br>
+            <span class="disclaimer">
+              for your first year, then $34<span class="cents">.99</span>/year
+            </span>
+            <br>
+            <span class="disclaimer">disable auto-renewal from Settings anytime,
+              even during trial period</span>
+          </span>
+        </span>
+      </div>
+      <form method="POST" action="/api/stripe_checkout.php">
+        <input type="hidden" name="subType">
+        <input type="hidden" name="uuid">
+        <input type="hidden" name="offerDiscount">
+        <div class="p">
+          <button type="submit" class="primaryButton"
+            style="font-weight: bold">
+            Credit card
+            <svg class="inline-icon"><use href="#icon-open-in-new" /></svg>
+          </button>
+        </div>
+        <div class="p" id="appleGooglePay" hidden>
+          <button type="submit" class="primaryButton"
+            style="font-weight: bold">
+            <span>Apple/Google Pay</span>
+            <svg class="inline-icon"><use href="#icon-open-in-new" /></svg>
+          </button>
+        </div>
+      </form>
+      <div class="p paypalButtonContainer" id="paypalButtonContainer-monthly"
+        hidden>
+      </div>
+      <div class="p paypalButtonContainer" id="paypalButtonContainer-annually"
+        hidden>
+      </div>
+      <div class="p">
+        <span class="trialAvailable">Starts with 7 days free.</span>
+        Cancel in Settings anytime or contact us. <strong>Thank you</strong> for
+        supporting Squaredle!
+      </div>
+      <div class="p disclaimer">
+        Squaredle uses secure payment processors. We never see your credit card
+        or PayPal account information.
+      </div>
+      <div class="p">
+        <a href="#" id="signup-payNow-backBtn"
+          data-button="premiumSignup-payNow-back">
+          &lt; Back
+        </a>
+      </div>
+    </div>
+
+    <div id="signup-waiting" hidden>
+      <div class="p">
+        Thanks for your support!
+      </div>
+      <div class="p">
+        Please complete checkout at Stripe, then
+        <a href="#" id="premiumSignupReload"
+          data-button="premiumSignup-waiting-reload">
+          reload this page</a>
+        to access Squaredle Squared features.
+      </div>
+      <div class="p">
+        <a href="#" id="signup-waiting-backBtn"
+          data-button="premiumSignup-waiting-back">
+          &lt; Back
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="premiumSuccess" class="popup important" hidden>
+  <h2>
+    <div>
+      <svg class="inline-icon"><use href="#icon-squared" /></svg>
+      <span class="gold">Squaredle Squared</span>
+    </div>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div class="p">
+      Thanks for supporting us by signing up for Squaredle Squared!
+    </div>
+    <div id="premiumTrySettings" hidden>
+      <div class="p">
+        We've confirmed your subscription.
+      </div>
+      <div class="p">
+        Try selecting some customization options in
+        <a href="#" id="premiumSuccess-settings"
+          data-button="premiumSuccess-settings">Settings</a>!
+      </div>
+      <div class="p">
+        Or jump into the
+        <a href="#" id="premiumSuccess-archives"
+          data-button="premiumSuccess-archives">puzzle archives</a>.
+      </div>
+      <div class="p">
+        You can also request the Supporter role on our
+        <a href="https://discord.gg/Pkad9p4rsq" target="_blank"
+          data-button="premiumSuccess-discord">Discord</a>.
+      </div>
+    </div>
+    <div id="premiumProcessing" hidden>
+      <div class="p">
+        <strong>
+          Your subscription is processing. It should be ready momentarily.
+        </strong>
+        You can
+        <a href="#" class="premiumSuccess-refresh"
+          data-button="premiumSuccess-refresh">refresh</a>
+        to check your subscription again, or close this window to keep playing.
+      </div>
+    </div>
+    <div id="premiumProcessed" hidden>
+      <div class="p">
+        <strong>
+          Your subscription has been confirmed.
+        </strong>
+        Thanks! Please
+        <a href="#" class="premiumSuccess-refresh"
+          data-button="premiumSuccess-refresh">refresh</a>
+        to enable premium content and settings.
+      </div>
+    </div>
+    <div id="premiumBrowser" hidden>
+      <div class="p">
+        It looks like you signed into Squaredle on a different browser. Please
+        switch back to that window to access Squaredle Squared features.
+      </div>
+      <div class="p">
+        Alternatively, you may
+        <a href="#" id="premiumSuccess-signIn"
+          data-button="premiumSuccess-signIn">sign in here</a>
+        to continue using this browser.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="specialPuzzles" class="popup" hidden>
+  <h2>
+    <span class="largeScreen">Special Squaredles</span>
+    <span class="smallScreen">Specials</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <div id="eventWeekly" hidden></div>
+
+    <h3>Member Weekly</h3>
+    <div class="p">
+      <span class="notPremium">
+        <a href="#" class="premiumBtn" data-button="weeklyPuzzle-premium">
+          Squaredle Squared</a>
+      </span>
+      <span class="premium">Squaredle Squared</span>
+      members get a premium weekly puzzle each week.
+    </div>
+    <div class="p">
+      <a id="playWeekly" href="?puzzle=weekly" class="primaryButton"
+        data-button="weeklyPuzzle-premium">
+        <svg><use href="#icon-premium" /></svg>
+       Play Member Weekly
+      </a>
+    </div>
+
+    <hr>
+    <h3>Express</h3>
+    <div class="p">
+      The daily 3x3 Squaredle Express is fast and fun!
+    </div>
+    <div class="p">
+      <a id="playExpress" href="?level=xp" class="primaryButton"
+        data-button="expressPuzzle">
+        Play Squaredle Express
+      </a>
+    </div>
+
+    <div id="specialPuzzlesList"></div>
+  </div>
+</div>
+
+<div id="archive" class="popup" hidden>
+  <h2>
+    <span>Past puzzles</span>
+    <div><a href="#" class="closeBtn"><svg><use href="#icon-close" /></svg></a></div>
+  </h2>
+  <div class="content">
+    <h3>Classics</h3>
+
+    <div class="p disclaimer"><em>
+      Try these re-released versions of some favorite Squaredles!
+    </em></div>
+
+    <dl id="archiveClassics"></dl>
+
+    <h3>Archive</h3>
+
+    <div class="p">Pick up where you left off on any past puzzle.</div>
+    <div class="p notPremium">
+      <span id="archiveRequiresPremium">
+        Requires a
+        <a href="#" class="premiumBtn" data-button="archive-premium">Squaredle Squared</a>
+        membership.
+      </span>
+    </div>
+    <div class="p disclaimer">
+      Weekly and Express puzzles are coming soon!
+    </div>
+    <div class="p">
+      <label class="toggle">
+        <span class="switch">
+          <input type="checkbox" id="hideCompletedPuzzles"
+            data-button="archive-hideCompletedPuzzles">
+          <span class="slider"></span>
+        </span>
+        Hide completed puzzles
+      </label>
+    </div>
+    <div class="p">
+      <button id="archiveExpandAll">Expand all</button>
+    </div>
+    <div class="p" id="archiveEntries">
+      <ul class="tree">
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Misc -->
+
+<div id="lines"></div>
+
+<div id="loadingScrim" hidden>Loading...</div>
+
+<!-- Scripts -->
+
+<script src="/api/today-puzzle-config.js"></script>
+
+<script src="closure-v3-27-4.js"></script>
+
+</body>
+</html>
